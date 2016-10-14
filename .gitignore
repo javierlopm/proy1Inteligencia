@@ -1,0 +1,6 @@
+bin/psvn
+*\.succ
+*\.dist
+*\.dist_pdb
+*\.dist_pdb
+*\.generator
