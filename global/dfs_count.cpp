@@ -1,0 +1,103 @@
+/*
+This program computes the distance to goal (i.e. the cost of the least-cost path to the goal)
+of every state from which the goal can be reached.
+It does this by executing Dijkstra's algorithm backwards from the goal.
+It prints on stdout each state and its distance (distance first, then the state) and, if a filename is
+provided as a command line argument, it prints the state_map it builds to that file.
+
+Copyright (C) 2013 by the PSVN Research Group, University of Alberta
+*/
+
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+
+int main(int argc, char **argv) {
+    state_t state, child;   // NOTE: "child" will be a predecessor of state, not a successor
+    int actual_level, ruleid, max_bound,status;
+    int move_to_make;
+    int bwd_move;
+    
+    char first_state[255] = "15 4 3 20 14 5 1 2 6 10 9 11 16 0 8 7 12 13 17 19 18 21";
+    ruleid_iterator_t *actual_m_iter;
+
+    vector<int> level_count;
+    vector<ruleid_iterator_t*> moves_vector;
+
+    actual_level = 0;
+
+
+    cout << "Introduce la cantidad máxima de niveles>";
+    cin  >> max_bound;
+
+    FILE *file; // the final state_map is written to this file if it is provided (command line argument)
+
+    // cout << "Introduce un estado> ";
+    // cin >> first_state;
+
+    // cout << first_state << flush;
+
+    status = read_state(first_state,&state);
+    if( status <= 0 ) {
+        cout << "Error: estado inválido.\n";
+        return 0; 
+    }
+    
+
+    for (int i = 0; i <= max_bound; ++i)
+        level_count.push_back(0);
+
+    for (int i = 0; i <= max_bound; ++i){
+        actual_m_iter = new ruleid_iterator_t;
+        moves_vector.push_back(actual_m_iter);
+    }
+
+    init_fwd_iter(moves_vector[0],&state);
+
+    while (max_bound >= 0){
+        /* Make a move until we reach bound*/
+        while( actual_level < max_bound ) {
+
+            /* count child */
+            level_count[actual_level] = level_count[actual_level] + 1;
+    
+            /* Make move */
+            move_to_make = next_ruleid(moves_vector[actual_level]);
+            apply_fwd_rule(move_to_make,&state,&child);
+            copy_state(&state,&child);
+
+            
+            /* Initialize next iterator*/
+            actual_level++;
+            init_fwd_iter(moves_vector[actual_level],&state);
+        }
+        
+
+        /* On actual level count all posible moves */
+        while( (move_to_make = next_ruleid(moves_vector[actual_level])) >= 0 ) {a
+            /* Make move */
+            move_to_make = next_ruleid(moves_vector[actual_level]);
+            apply_fwd_rule(move_to_make,&state,&child);
+            copy_state(&state,&child);
+    
+            /* Count child */
+            level_count[actual_level] = level_count[actual_level] + 1;
+        }
+    
+        /* Lower max bound and repeat*/
+        max_bound--;
+        actual_level--;
+    }
+
+        
+
+    
+    cout << "LEVELS | Children \n";
+    for (int i = 0; i <= max_bound; ++i)
+        cout << i << " " << level_count[i] << "\n" ;
+    
+    return 0;
+}
+
