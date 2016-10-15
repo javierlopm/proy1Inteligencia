@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     char first_state[255] = "15 4 3 20 14 5 1 2 6 10 9 11 16 0 8 7 12 13 17 19 18 21";
     ruleid_iterator_t *actual_m_iter;
 
-    vector<int> level_count;
+    vector<long> level_count;
     vector<ruleid_iterator_t*> moves_vector;
 
     actual_level = 0;
@@ -55,24 +55,17 @@ int main(int argc, char **argv) {
         moves_vector.push_back(actual_m_iter);
     }
 
-    // init_fwd_iter(moves_vector[0],&state);
-
     init_fwd_iter(moves_vector[0],&state);
 
-    while (max_bound >= 0 && actual_level >= 0){
-
+    do {
         /* Make a move until we reach bound*/
         while( actual_level < max_bound ) {
     
             /* Make move */
             move_to_make = next_ruleid(moves_vector[actual_level]);
 
-            // if (move_to_make <= 0 && actual_level == max_bound-1){ 
-            //     cout << "llegue al final :(" << flush;
-            //     max_bound --;
-            //     actual_level --;
-            //     break;
-            // }
+            if (move_to_make < 0) break;
+            
 
             apply_fwd_rule(move_to_make,&state,&child);
             copy_state(&state,&child);
@@ -81,13 +74,13 @@ int main(int argc, char **argv) {
             level_count[actual_level] = level_count[actual_level] + 1;
             
             /* Initialize next iterator*/
-            actual_level++;
+            actual_level++; // deberia almacenar el movimiento que realizó
             init_fwd_iter(moves_vector[actual_level],&state);
 
-            cout << "arrib ";
-            for (int i = 0; i <= max_bound_backup; ++i)
-                cout  << level_count[i] << " " ;
-            cout << "\n" << flush;
+            // cout << "arrib ";
+            // for (int i = 0; i <= max_bound_backup; ++i)
+            //     cout  << level_count[i] << " " ;
+            // cout << "\n" << flush;
         }
         
         
@@ -100,16 +93,17 @@ int main(int argc, char **argv) {
             /* Count child */
             level_count[actual_level] = level_count[actual_level] + 1;
 
-            cout << "abajo ";
-            for (int i = 0; i <= max_bound_backup; ++i)
-                cout << level_count[i] << " " ;
-            cout << "\n" << flush;
+            // cout << "abajo ";
+            // for (int i = 0; i <= max_bound_backup; ++i)
+            //     cout << level_count[i] << " " ;
+            // cout << "\n" << flush;
         }
     
-        /* Lower max bound and repeat*/
-        // max_bound--;
+
+        /* necesita ir acompañado de un movimiento de retorno*/
         actual_level--;
-    }
+
+    } while ( actual_level > 0);
 
             
 
