@@ -16,7 +16,7 @@ using namespace std;
 
 int main(int argc, char **argv) {
     state_t state, child;   // NOTE: "child" will be a predecessor of state, not a successor
-    int actual_level, ruleid, max_bound,status;
+    int actual_level, ruleid, max_bound,max_bound_backup,status;
     int move_to_make;
     int bwd_move;
     
@@ -29,8 +29,9 @@ int main(int argc, char **argv) {
     actual_level = 0;
 
 
-    cout << "Introduce la cantidad máxima de niveles>";
+    cout << "Introduce la cantidad máxima de niveles > ";
     cin  >> max_bound;
+    max_bound_backup = max_bound;
 
     FILE *file; // the final state_map is written to this file if it is provided (command line argument)
 
@@ -54,48 +55,67 @@ int main(int argc, char **argv) {
         moves_vector.push_back(actual_m_iter);
     }
 
+    // init_fwd_iter(moves_vector[0],&state);
+
     init_fwd_iter(moves_vector[0],&state);
 
-    while (max_bound >= 0){
+    while (max_bound >= 0 && actual_level >= 0){
+
         /* Make a move until we reach bound*/
         while( actual_level < max_bound ) {
-
-            /* count child */
-            level_count[actual_level] = level_count[actual_level] + 1;
     
             /* Make move */
             move_to_make = next_ruleid(moves_vector[actual_level]);
+
+            // if (move_to_make <= 0 && actual_level == max_bound-1){ 
+            //     cout << "llegue al final :(" << flush;
+            //     max_bound --;
+            //     actual_level --;
+            //     break;
+            // }
+
             apply_fwd_rule(move_to_make,&state,&child);
             copy_state(&state,&child);
 
+            /* count child */
+            level_count[actual_level] = level_count[actual_level] + 1;
             
             /* Initialize next iterator*/
             actual_level++;
             init_fwd_iter(moves_vector[actual_level],&state);
+
+            cout << "arrib ";
+            for (int i = 0; i <= max_bound_backup; ++i)
+                cout  << level_count[i] << " " ;
+            cout << "\n" << flush;
         }
         
-
+        
         /* On actual level count all posible moves */
-        while( (move_to_make = next_ruleid(moves_vector[actual_level])) >= 0 ) {a
+        while( (move_to_make = next_ruleid(moves_vector[actual_level])) >= 0 ) {
             /* Make move */
-            move_to_make = next_ruleid(moves_vector[actual_level]);
             apply_fwd_rule(move_to_make,&state,&child);
             copy_state(&state,&child);
     
             /* Count child */
             level_count[actual_level] = level_count[actual_level] + 1;
+
+            cout << "abajo ";
+            for (int i = 0; i <= max_bound_backup; ++i)
+                cout << level_count[i] << " " ;
+            cout << "\n" << flush;
         }
     
         /* Lower max bound and repeat*/
-        max_bound--;
+        // max_bound--;
         actual_level--;
     }
 
-        
+            
 
     
     cout << "LEVELS | Children \n";
-    for (int i = 0; i <= max_bound; ++i)
+    for (int i = 0; i <= max_bound_backup; ++i)
         cout << i << " " << level_count[i] << "\n" ;
     
     return 0;
