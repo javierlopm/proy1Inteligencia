@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
     int history;
     
-    char first_state[255] = "15 4 3 20 14 5 1 2 6 10 9 11 16 0 8 7 12 13 17 19 18 21";
+    char first_state[511];
     ruleid_iterator_t *actual_m_iter;
 
     vector<long> level_count;
@@ -38,12 +38,14 @@ int main(int argc, char **argv) {
 
     FILE *file; // the final state_map is written to this file if it is provided (command line argument)
 
-    // cout << "Introduce un estado> ";
-    // cin >> first_state;
+    cout << "Introduce un estado> ";
+    cin.ignore();
+    cin.getline(first_state,511);
 
     // cout << first_state << flush;
 
     status = read_state(first_state,&state);
+
     if( status <= 0 ) {
         cout << "Error: estado inválido.\n";
         return 0; 
