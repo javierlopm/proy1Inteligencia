@@ -13,10 +13,12 @@ Copyright (C) 2013 by the PSVN Research Group, University of Alberta
 
 using namespace std;
 
+unsigned int max_bound;
 
 int main(int argc, char **argv) {
     state_t state, child;   // NOTE: "child" will be a predecessor of state, not a successor
-    int actual_level, ruleid, max_bound,max_bound_backup,status;
+    int actual_level,ruleid,status;
+    
     int move_to_make;
     int bwd_move;
 
@@ -103,7 +105,7 @@ int main(int argc, char **argv) {
         actual_level--;
         apply_bwd_rule(moves_made[actual_level],&state,&child);
         copy_state(&state,&child);
-        history = next_bwd_history(history,moves_made[actual_level]);
+        // history = next_bwd_history(history,moves_made[actual_level]);
 
     } while ( actual_level > 0);
 
@@ -117,3 +119,17 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+void bounded_dfs( unsigned int level, int history,state_t *state) {
+    state_t *child;
+    int move_to_make;
+    int child_history;
+
+    if (level > max_bound) return;
+
+    while( move_to_make = next_ruleid(moves_vector[actual_level]) >= 0 ){
+        if ( ! fwd_rule_valid_for_history(history,move_to_make) ) continue;
+
+
+    }
+
+}
