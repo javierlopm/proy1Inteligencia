@@ -23,10 +23,11 @@ int main(int argc, char **argv) {
     char first_state[511];
     ruleid_iterator_t *actual_m_iter;
 
-    vector<long> level_count;
-    vector<int>  moves_made;
-    vector<int>  histories;
-    vector<ruleid_iterator_t*> moves_vector;
+    vector<long> level_count; // per level count of nodes
+    vector<int>  moves_made;  // moves made (needed to go back)
+    vector<int>  histories;   // history (for pruning)
+
+    vector<ruleid_iterator_t*> moves_vector; // iterators per level
 
     actual_level = 0;
 
@@ -49,7 +50,6 @@ int main(int argc, char **argv) {
         cout << "Error: estado inválido.\n";
         return 0; 
     }
-
 
     for (int i = 0; i <= max_bound; ++i)
         level_count.push_back(0);
@@ -77,26 +77,21 @@ int main(int argc, char **argv) {
 
             if (move_to_make < 0) break;
 
-            if ( fwd_rule_valid_for_history(histories[actual_level],move_to_make) != 0 ){
-                moves_made[actual_level] = move_to_make;
-    
-                apply_fwd_rule(move_to_make,&state,&child);
-                histories[actual_level+1] = next_fwd_history(histories[actual_level],move_to_make);
-    
-                copy_state(&state,&child);
-    
-                /* count child */
-                level_count[actual_level]++;
-                
-                /* Initialize next iterator*/
-                actual_level++; // deberia almacenar el movimiento que realizó
-                init_fwd_iter(moves_vector[actual_level],&state);
-            }
+            if ( fwd_rule_valid_for_history(histories[actual_level],move_to_make) == 0 ) continue;
 
-            // cout << "arrib ";
-            // for (int i = 0; i <= max_bound_backup; ++i)
-            //     cout  << level_count[i] << " " ;
-            // cout << "\n" << flush;
+            moves_made[actual_level] = move_to_make;
+            apply_fwd_rule(move_to_make,&state,&child);
+            histories[actual_level+1] = next_fwd_history(histories[actual_level],move_to_make);
+
+            copy_state(&state,&child);
+
+            /* count child */
+            level_count[actual_level]++;
+            
+            /* Initialize next iterator*/
+            actual_level++; 
+            init_fwd_iter(moves_vector[actual_level],&state);
+
         }
         
         
@@ -104,7 +99,6 @@ int main(int argc, char **argv) {
         actual_level--;
         apply_bwd_rule(moves_made[actual_level],&state,&child);
         copy_state(&state,&child);
-        // history = next_bwd_history(history,moves_made[actual_level]);
 
     } while ( actual_level > 0);
 
