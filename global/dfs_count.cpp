@@ -19,6 +19,8 @@ int main(int argc, char **argv) {
     int actual_level, ruleid, max_bound,max_bound_backup,status;
     int move_to_make;
     int bwd_move;
+
+    int history;
     
     char first_state[255] = "15 4 3 20 14 5 1 2 6 10 9 11 16 0 8 7 12 13 17 19 18 21";
     ruleid_iterator_t *actual_m_iter;
@@ -47,6 +49,7 @@ int main(int argc, char **argv) {
         return 0; 
     }
     
+    history = init_history;
 
     for (int i = 0; i <= max_bound; ++i)
         level_count.push_back(0);
@@ -71,18 +74,21 @@ int main(int argc, char **argv) {
 
             if (move_to_make < 0) break;
 
-            // si es que se puede hacer ...
-            moves_made[actual_level] = move_to_make;
-
-            apply_fwd_rule(move_to_make,&state,&child);
-            copy_state(&state,&child);
-
-            /* count child */
-            level_count[actual_level] = level_count[actual_level] + 1;
-            
-            /* Initialize next iterator*/
-            actual_level++; // deberia almacenar el movimiento que realizó
-            init_fwd_iter(moves_vector[actual_level],&state);
+            if ( fwd_rule_valid_for_history(history,move_to_make) != 0 ){
+                moves_made[actual_level] = move_to_make;
+    
+                apply_fwd_rule(move_to_make,&state,&child);
+                history = next_fwd_history(history,move_to_make);
+    
+                copy_state(&state,&child);
+    
+                /* count child */
+                level_count[actual_level] = level_count[actual_level] + 1;
+                
+                /* Initialize next iterator*/
+                actual_level++; // deberia almacenar el movimiento que realizó
+                init_fwd_iter(moves_vector[actual_level],&state);
+            }
 
             // cout << "arrib ";
             // for (int i = 0; i <= max_bound_backup; ++i)
@@ -95,6 +101,7 @@ int main(int argc, char **argv) {
         actual_level--;
         apply_bwd_rule(moves_made[actual_level],&state,&child);
         copy_state(&state,&child);
+        history = next_bwd_history(history,moves_made[actual_level]);
 
     } while ( actual_level > 0);
 
