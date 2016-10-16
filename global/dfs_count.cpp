@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
     ruleid_iterator_t *actual_m_iter;
 
     vector<long> level_count;
+    vector<int> moves_made;
     vector<ruleid_iterator_t*> moves_vector;
 
     actual_level = 0;
@@ -50,7 +51,11 @@ int main(int argc, char **argv) {
     for (int i = 0; i <= max_bound; ++i)
         level_count.push_back(0);
 
-    for (int i = 0; i <= max_bound; ++i){
+    for (int i = 0; i <= max_bound; ++i)
+        moves_made.push_back(0);
+
+    // Un init más que el requerido
+    for (int i = 0; i <= max_bound+1; ++i) {
         actual_m_iter = new ruleid_iterator_t;
         moves_vector.push_back(actual_m_iter);
     }
@@ -59,13 +64,15 @@ int main(int argc, char **argv) {
 
     do {
         /* Make a move until we reach bound*/
-        while( actual_level < max_bound ) {
+        while( actual_level <= max_bound ) {
     
             /* Make move */
             move_to_make = next_ruleid(moves_vector[actual_level]);
 
             if (move_to_make < 0) break;
-            
+
+            // si es que se puede hacer ...
+            moves_made[actual_level] = move_to_make;
 
             apply_fwd_rule(move_to_make,&state,&child);
             copy_state(&state,&child);
@@ -84,24 +91,10 @@ int main(int argc, char **argv) {
         }
         
         
-        /* On actual level count all posible moves */
-        while( (move_to_make = next_ruleid(moves_vector[actual_level])) >= 0 ) {
-            /* Make move */
-            apply_fwd_rule(move_to_make,&state,&child);
-            copy_state(&state,&child);
-    
-            /* Count child */
-            level_count[actual_level] = level_count[actual_level] + 1;
-
-            // cout << "abajo ";
-            // for (int i = 0; i <= max_bound_backup; ++i)
-            //     cout << level_count[i] << " " ;
-            // cout << "\n" << flush;
-        }
-    
-
-        /* necesita ir acompañado de un movimiento de retorno*/
+        /* Going back one level */
         actual_level--;
+        apply_bwd_rule(moves_made[actual_level],&state,&child);
+        copy_state(&state,&child);
 
     } while ( actual_level > 0);
 
