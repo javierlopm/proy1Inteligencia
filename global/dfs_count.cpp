@@ -66,6 +66,8 @@ int main(int argc, char **argv) {
         moves_vector.push_back(actual_m_iter);
     }
 
+    level_count[0] = 1;
+    
     init_fwd_iter(moves_vector[0],&state);
 
     do {
@@ -86,10 +88,10 @@ int main(int argc, char **argv) {
             copy_state(&state,&child);
 
             /* count child */
+            actual_level++;
             level_count[actual_level]++;
             
             /* Initialize next iterator*/
-            actual_level++; 
             init_fwd_iter(moves_vector[actual_level],&state);
 
         }
@@ -100,7 +102,7 @@ int main(int argc, char **argv) {
         apply_bwd_rule(moves_made[actual_level],&state,&child);
         copy_state(&state,&child);
 
-    } while ( actual_level > 0);
+    } while ( actual_level >= 0);
 
             
 
