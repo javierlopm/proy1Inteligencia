@@ -11,7 +11,7 @@ using namespace std;
 
 void signalHandler( int signum )
 {
-    cout << "na, na, na, na" << flush;
+    cout << "na, na, na, na\n" << flush;
 
 
 
