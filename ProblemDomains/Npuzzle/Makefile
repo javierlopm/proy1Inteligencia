@@ -1,5 +1,5 @@
 CC = gcc
-CXX = g++
+CXX = g++ -std=gnu++11 
 OPT = -g -Wall -O3 -Wno-unused-function -Wno-unused-variable
 HIST=0
 PSVNOPT = --state_map --no_abstraction --backwards_moves --history_len=$(HIST)
@@ -41,6 +41,10 @@ psvn2c_abstraction.c:
 
 %.best_first_search: %.c ../../global/best_first_search.cpp
 	$(CXX) $(OPT) ../../global/best_first_search.cpp -include $< -o $@
+	rm -f $*.c
+
+%.id_dfs: %.c ../../global/id_dfs.cpp
+	$(CXX) $(OPT) ../../global/id_dfs.cpp -include $< -o $@
 	rm -f $*.c
 
 .PHONY: clean

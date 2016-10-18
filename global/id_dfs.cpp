@@ -3,8 +3,20 @@
 #include <iostream>
 #include <tuple>
 #include <time.h>
+#include <csignal>
 
 using namespace std;
+
+
+void signalHandler( int signum )
+{
+    cout << "na, na, na, na\n" << flush;
+
+
+
+   exit(signum);  
+
+}
 
 tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  d, int  bound, int history);
 
@@ -18,7 +30,9 @@ int main(int argc, char **argv) {
     bool goal;
     unsigned nodos_gen;
 
-    cout << "Introduce un estado> ";
+    signal(SIGALRM,signalHandler);
+
+    // cout << "Introduce un estado> ";
     cin.getline(first_state,511);
 
     t_ini = clock();
@@ -30,6 +44,8 @@ int main(int argc, char **argv) {
     }
 
 //-------------------------------------------------------
+    cout << "X, id_dfs, tower14_4, " << "\""<< first_state << "\", " << flush ;
+
     bound=0;
     nodos_gen = 0;
     //Perform depth-bounded searches with increasing depth bounds
@@ -41,7 +57,7 @@ int main(int argc, char **argv) {
             t_fin = clock();
             secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
             genxs = nodos_gen / secs;
-            cout << "\nX, id_dfs, tower14_4, " << "\""<< first_state << "\", " << get<0>(p)<< ", "<< nodos_gen << ", "<< secs << ", "<< genxs <<"\n";
+            cout << get<0>(p)<< ", "<< nodos_gen << ", "<< secs << ", "<< genxs <<"\n" << flush;
  			return 0;
     	}	
     	bound =  bound +1;
