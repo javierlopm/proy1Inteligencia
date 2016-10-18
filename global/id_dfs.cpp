@@ -6,6 +6,21 @@
 
 using namespace std;
 
+#include <csignal>
+
+using namespace std;
+
+void signalHandler( int signum )
+{
+    cout << "Interrupt signal (" << signum << ") received.\n";
+
+    // cleanup and close up stuff here  
+    // terminate program  
+
+   exit(signum);  
+
+}
+
 tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  d, int  bound);
 
 int main(int argc, char **argv) {
