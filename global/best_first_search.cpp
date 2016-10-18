@@ -27,10 +27,10 @@ struct node {
     int distance;
 };
 
-inline int  get_distance(node& n)        { return n->distance;}
-inline void set_distance(node& n,int nd) { n->distance = nd;  }
+inline int  get_distance(node* n)        { return n->distance;}
+inline void set_distance(node* n,int nd) { n->distance = nd;  }
 
-node *make_node(node& parent,state_t& child){
+node *make_node(node* parent,state_t* child){
     node *new_node = new node;
 
     new_node->parent = parent;
@@ -82,10 +82,11 @@ node* best_first_search(int (*heuristic)(state_t),state_t& root){
     // state_map_add(map, root, 0); // distance map
 
 
-    while (! pq.empty() ){
+    while (! pq.Empty() ){
         cp  = pq.CurrentPriority();
 
-        new_node = pq.pop();
+        new_node = pq.Top();
+        pq.Pop();
         state_t *new_state = new_node->child;
 
         if (cp < get_distance(new_node)) {
@@ -98,14 +99,14 @@ node* best_first_search(int (*heuristic)(state_t),state_t& root){
                 int hx;
                 int new_val;
                 // state_t * child = new state_t;
-                apply_fwd_rule(rule,new_state,&aux_child);
+                apply_fwd_rule(rule,new_state,aux_child);
 
-                hx = heuristic(aux_child);
+                hx = heuristic(*aux_child);
 
                 if ( hx == numeric_limits<int>::max()) continue;
                 // marcar nuevo como gris
                 new_val = cp + hx + get_fwd_rule_cost(rule);
-                pq.Add(new_val, new_val, make_node(new_node,aux_child));
+                pq.Add(new_val, new_val, *make_node(new_node,aux_child));
 
             // marcar como negro
 
