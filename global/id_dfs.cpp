@@ -2,12 +2,15 @@
 #include <vector>
 #include <iostream>
 #include <tuple>
+#include <time.h>
 
 using namespace std;
 
 tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  d, int  bound);
 
 int main(int argc, char **argv) {
+    clock_t t_ini, t_fin;
+    double secs, genxs;
 
 	int bound, status;
 	char first_state[511];
@@ -16,9 +19,9 @@ int main(int argc, char **argv) {
     unsigned nodos_gen;
 
     cout << "Introduce un estado> ";
-    //cin.ignore();
     cin.getline(first_state,511);
 
+    t_ini = clock();
     status = read_state(first_state,&state);
 
     if( status <= 0 ) {
@@ -35,18 +38,20 @@ int main(int argc, char **argv) {
     	tuple<unsigned,unsigned,bool> p = bounded_id_dfs(state, 0, bound);
         nodos_gen+= get<1>(p);
     	if (get<2>(p) == 1){
-            cout << "Nodos generados: " << nodos_gen << "\n";
-            cout << "Costo: " << get<0>(p) << "\n";
+            //X, dfid, pancake16, "15 14 13 12 11 0 1 2 3 4 5 6 7 8 9 10", 2, 3333, 0.000167, 1.99581e+07
+            t_fin = clock();
+            secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
+            genxs = nodos_gen / secs;
+            cout << "\nX, id_dfs, tower14_4, " << "\""<< first_state << "\", " << get<0>(p)<< ", "<< nodos_gen << ", "<< secs << ", "<< genxs <<"\n";
+            //cout << "segs: " << secs ;
  			return 0;
     	}	
     	bound =  bound +1;
-
-        //cout << "\nBOUND: " << bound << "\n";
     }
 
 }
 //Iterative deepening depth-first search
-// <costo, numnodos generados>
+// <costo, generados, goal?>
 tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  d, int  bound){
 		int ruleid;
 	    ruleid_iterator_t posible_moves;
@@ -66,16 +71,10 @@ tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  d, int  bound){
     	//expansion and recursion
         while ( (ruleid = next_ruleid(&posible_moves)) >= 0 ) {
 	        apply_fwd_rule(ruleid, &state, &child);
-            //cout << "Regla aplicada: " << ruleid<< ". ";
-            //printf("Child: ");
-            //print_state(stdout, &child);
-            //printf("\n");
 	        ++childCount;
 	        tuple<unsigned,unsigned,bool> px = bounded_id_dfs(child, d+1, bound);
-            childCount= childCount + (get<1>(px));
-	        if ((get<2>(px))  == 1) return make_tuple(get<0>(px), childCount,true);
-	        //t = min(t, get<2>(p));
-	        //childCount+=get<2>(p);	
+            childCount+= (get<1>(px));
+	        if ((get<2>(px))  == 1) return make_tuple(get<0>(px), childCount,true);	
 
         }
         return make_tuple(0, childCount,false);
