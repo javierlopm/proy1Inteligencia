@@ -17,28 +17,28 @@ Copyright (C) 2013 by the PSVN Research Group, University of Alberta
 
 using namespace std;
 
-#define WHITE 0
-#define GRAY  1
-#define BLACK 2
+#define GRAY  0
+#define BLACK 1
 
 struct node_manhattan {
-    int distance;
-    int parent_h;
-    unsigned char parent_blank;
-    unsigned char my_blank;
+    int my_h;
+    unsigned char blank;
     state_t *child;
 };
 
-node_manhattan* make_manhattan_node(int d, int p_h,unsigned int p_bl,unsigned int m_b, state_t *c){
+node_manhattan* make_manhattan_node(int p_h,unsigned int m_b, state_t *c){
     node_manhattan * new_node = new node_manhattan;
 
-    new_node->distance     = d;
-    new_node->parent_h     = p_h;
-    new_node->parent_blank = p_bl;
-    new_node->my_blank     = m_b;
-    new_node->child        = c;
+    new_node->my_h  = p_h;
+    new_node->blank = m_b;
+    new_node->child = c;
 
-    return node_manhattan;
+    return new_node;
+}
+
+void destroy_node(node_manhattan *n){
+    delete n->child;
+    delete n; 
 }
 
 int main(int argc, char **argv) {
@@ -73,52 +73,75 @@ int main(int argc, char **argv) {
 void best_first_search(int (*heuristic)(state_t),state_t& root){
     int cp;
     int rule;
+    int last_h;
     
-    PriorityQueue<node> pq;
+    PriorityQueue<node_manhattan> pq;
     ruleid_iterator_t iterator;
 
-    node    *new_node;
+    node_manhattan *last_node,*node_creator;
     state_t *new_state;
     state_t *aux_child;
-    // state_map_t *map = new_state_map();
+    state_map_t *map      = new_state_map();
+    state_map_t *map_dist = new_state_map();
 
-    // state_map_add(map, root, 0); // distance map
 
+    state_map_add(map,root, GRAY); // distance map
+    state_map_add(map,root, 0   ); // distance map
+
+    last_h = init_manhattan(root);
+
+    last_node =  make_node(0,last_h,0,42,*root); // 42 is the initial state blank
+
+    pq.Add(0,0,last_node);
 
     while (! pq.Empty() ){
-        cp  = pq.CurrentPriority();
+        int *actual_color;
 
-        new_node = pq.Top();
+        // cp  = pq.CurrentPriority();
+
+        last_node = pq.Top();
         pq.Pop();
-        // state_t *new_state = new_node->child;
+        // state_t *new_state = last_node->child;
 
-        if (cp < new_node->distance) {
-            set_distance(new_node,cp);
-            new_node->distance = cp;
+        if (is_goal(last_node->child)) return;
 
-            if (is_goal(new_state)) return;
+        while ((rule = next_ruleid(&iterator)) >= 0) {
+            int g = last_node->distance + get_fwd_rule_cost(rule);
 
-            init_fwd_iter(&iterator,new_state);
+            int hx = manhattan_h(last_node.my_h,last_node->blank,get_blank(rule));
 
-            while ((rule = next_ruleid(&iterator)) >= 0) {
-                int hx;
-                int new_val;
-                // state_t * child = new state_t;
-                apply_fwd_rule(rule,new_state,aux_child);
+            if ( hx == numeric_limits<int>::max()) continue; 
 
-                hx = heuristic(*aux_child);
+            apply_fwd_rule(rule,last_node->child,aux_child);       
 
-                if ( hx == numeric_limits<int>::max()) continue;
+            actual_color = state_map_get(map,aux_child);
+
+            // white color
+            if (! actual_color) {
+
+                // init new node as gray with actual distance
+                node_creator = make_node(g,last_h,last_node->my_h,aux_child);
+                state_map_add(map,aux_child, GRAY);
+                state_map_add(map_dist,aux_child, g);
                 
-                // marcar nuevo como gris
-                new_val = cp + hx + get_fwd_rule_cost(rule);
-                pq.Add(new_val, new_val, *make_node(new_node,aux_child));
+                // add to queue with distance + heuristic cost
+                // hx = manhattan_h(last_node.my_h,last_node->blank,get_blank(rule));
+                pq.Add(g + hx,g + hx,node_creator);
+            }
+            else if (g < *state_map_get(map_dist, &state)){ // MEMORY LEAK?
 
-            // marcar como negro
+                // update path with one cheaper
+                state_map_add(map_dist,aux_child, g);
 
-                
+                if (actual_color == GRAY) continue; // pq.Modify(,,i,); // what...
+                else {
+                    state_map_add(map,aux_child, GRAY);
+                    node_creator = make_node(g,last_h,last_node->my_h,aux_child);
+                    pq.Add(g + hx,g + hx,node_creator);
+                }
             }
         }
+        state_map_add(map,last_node->child, BLACK);
     }
 }
 
