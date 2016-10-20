@@ -21,21 +21,24 @@ using namespace std;
 #define GRAY  1
 #define BLACK 2
 
-struct node {
-    node    *parent;
-    state_t *child;
+struct node_manhattan {
     int distance;
+    int parent_h;
+    unsigned char parent_blank;
+    unsigned char my_blank;
+    state_t *child;
 };
 
-inline int  get_distance(node* n)        { return n->distance;}
-inline void set_distance(node* n,int nd) { n->distance = nd;  }
+node_manhattan* make_manhattan_node(int d, int p_h,unsigned int p_bl,unsigned int m_b, state_t *c){
+    node_manhattan * new_node = new node_manhattan;
 
-node *make_node(node* parent,state_t* child){
-    node *new_node = new node;
+    new_node->distance     = d;
+    new_node->parent_h     = p_h;
+    new_node->parent_blank = p_bl;
+    new_node->my_blank     = m_b;
+    new_node->child        = c;
 
-    new_node->parent = parent;
-    new_node->child  = child;
-    return new_node;
+    return node_manhattan;
 }
 
 int main(int argc, char **argv) {
@@ -44,7 +47,7 @@ int main(int argc, char **argv) {
     int move_to_make;
     int bwd_move;
     
-    char first_state[511];
+    char first_state[255];
     ruleid_iterator_t *actual_m_iter;
 
 
@@ -52,7 +55,7 @@ int main(int argc, char **argv) {
 
     cout << "Introduce un estado> ";
     cin.ignore();
-    cin.getline(first_state,511);
+    cin.getline(first_state,255);
 
     // cout << first_state << flush;
 
@@ -66,8 +69,8 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-
-node* best_first_search(int (*heuristic)(state_t),state_t& root){
+/* No tree needed*/
+void best_first_search(int (*heuristic)(state_t),state_t& root){
     int cp;
     int rule;
     
@@ -87,11 +90,13 @@ node* best_first_search(int (*heuristic)(state_t),state_t& root){
 
         new_node = pq.Top();
         pq.Pop();
-        state_t *new_state = new_node->child;
+        // state_t *new_state = new_node->child;
 
-        if (cp < get_distance(new_node)) {
+        if (cp < new_node->distance) {
             set_distance(new_node,cp);
-            if (is_goal(new_state)) return new_node;
+            new_node->distance = cp;
+
+            if (is_goal(new_state)) return;
 
             init_fwd_iter(&iterator,new_state);
 
@@ -104,6 +109,7 @@ node* best_first_search(int (*heuristic)(state_t),state_t& root){
                 hx = heuristic(*aux_child);
 
                 if ( hx == numeric_limits<int>::max()) continue;
+                
                 // marcar nuevo como gris
                 new_val = cp + hx + get_fwd_rule_cost(rule);
                 pq.Add(new_val, new_val, *make_node(new_node,aux_child));
@@ -114,11 +120,25 @@ node* best_first_search(int (*heuristic)(state_t),state_t& root){
             }
         }
     }
-
-    return NULL;
 }
 
-int manhattan_h(state_t& actual){
+// unsigned char blank_list[48] = {
+//     1,2,3,5,6,7,9,10,11,13,14,15,
+//     2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+
+// }
+
+inline unsigned char get_blank(int rule_id){
+    return 5;
+}
+
+int init_manhattan(state_t& actual){
+    return 1;
+}
+
+int manhattan_h(int old_manhattan,
+                unsigned char old_blank,
+                unsigned char new_blank){
     /*
         0  1  2  3
         4  5  6  7
