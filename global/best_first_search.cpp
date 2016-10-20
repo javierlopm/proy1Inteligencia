@@ -148,9 +148,7 @@ void best_first_search(state_t& root){
             if (! actual_color) {
 
                 // init new node as gray with actual distance
-                node_creator = make_node(last_h
-                                        ,hx
-                                        ,aux_child);
+                node_creator = make_node(last_h,hx,aux_child);
 
                 state_map_add(map,aux_child, GRAY);
                 state_map_add(map_dist,aux_child, g);
@@ -159,7 +157,7 @@ void best_first_search(state_t& root){
                 // hx = manhattan_h(last_node.my_h,last_node->blank,get_blank(rule));
                 pq.Add(g + hx,g + hx,node_creator);
             }
-            else if (g < *state_map_get(map_dist, &state)){ // MEMORY LEAK?
+            else if (g < *state_map_get(map_dist, aux_child)){ // MEMORY LEAK?
 
                 // update path with one cheaper
                 state_map_add(map_dist,aux_child, g);
@@ -167,7 +165,7 @@ void best_first_search(state_t& root){
                 if (actual_color == GRAY) continue; // pq.Modify(,,i,); // what...
                 else {
                     state_map_add(map,aux_child, GRAY);
-                    node_creator = make_node(g,last_h,last_node->my_h,aux_child);
+                    node_creator = make_node(last_h,last_node->my_h,aux_child);
                     pq.Add(g + hx,g + hx,node_creator);
                 }
             }
