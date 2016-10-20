@@ -26,7 +26,33 @@ struct node_manhattan {
     state_t *child;
 };
 
-node_manhattan* make_manhattan_node(int p_h,unsigned int m_b, state_t *c){
+
+inline unsigned char get_blank(int rule_id){
+    return 5;
+}
+
+inline unsigned char get_first_blank(state_t& actual){
+    return 5;
+}
+
+int init_manhattan(state_t& actual){
+    return 1;
+}
+
+int manhattan_h(int old_manhattan,
+                unsigned char old_blank,
+                unsigned char new_blank){
+    /*
+        0  1  2  3
+        4  5  6  7
+        8  9  10 11
+        12 13 14 15 
+    */
+
+    return 1;
+}
+
+node_manhattan* make_node(int p_h,unsigned int m_b, state_t *c){
     node_manhattan * new_node = new node_manhattan;
 
     new_node->my_h  = p_h;
@@ -70,12 +96,12 @@ int main(int argc, char **argv) {
 }
 
 /* No tree needed*/
-void best_first_search(int (*heuristic)(state_t),state_t& root){
+void best_first_search(state_t& root){
     int cp;
     int rule;
     int last_h;
     
-    PriorityQueue<node_manhattan> pq;
+    PriorityQueue<node_manhattan*> pq;
     ruleid_iterator_t iterator;
 
     node_manhattan *last_node,*node_creator;
@@ -85,12 +111,12 @@ void best_first_search(int (*heuristic)(state_t),state_t& root){
     state_map_t *map_dist = new_state_map();
 
 
-    state_map_add(map,root, GRAY); // distance map
-    state_map_add(map,root, 0   ); // distance map
+    state_map_add(map,&root, GRAY); // distance map
+    state_map_add(map,&root, 0   ); // distance map
 
     last_h = init_manhattan(root);
 
-    last_node =  make_node(0,last_h,0,42,*root); // 42 is the initial state blank
+    last_node =  make_node(last_h,get_first_blank(root),&root);
 
     pq.Add(0,0,last_node);
 
@@ -106,9 +132,11 @@ void best_first_search(int (*heuristic)(state_t),state_t& root){
         if (is_goal(last_node->child)) return;
 
         while ((rule = next_ruleid(&iterator)) >= 0) {
-            int g = last_node->distance + get_fwd_rule_cost(rule);
+            int g = *state_map_get(map_dist,last_node->child) + get_fwd_rule_cost(rule);
 
-            int hx = manhattan_h(last_node.my_h,last_node->blank,get_blank(rule));
+            int hx = manhattan_h(last_node->my_h,
+                                 last_node->blank,
+                                 get_blank(rule));
 
             if ( hx == numeric_limits<int>::max()) continue; 
 
@@ -120,7 +148,10 @@ void best_first_search(int (*heuristic)(state_t),state_t& root){
             if (! actual_color) {
 
                 // init new node as gray with actual distance
-                node_creator = make_node(g,last_h,last_node->my_h,aux_child);
+                node_creator = make_node(last_h
+                                        ,hx
+                                        ,aux_child);
+
                 state_map_add(map,aux_child, GRAY);
                 state_map_add(map_dist,aux_child, g);
                 
@@ -142,6 +173,7 @@ void best_first_search(int (*heuristic)(state_t),state_t& root){
             }
         }
         state_map_add(map,last_node->child, BLACK);
+        delete last_node;
     }
 }
 
@@ -151,25 +183,5 @@ void best_first_search(int (*heuristic)(state_t),state_t& root){
 
 // }
 
-inline unsigned char get_blank(int rule_id){
-    return 5;
-}
-
-int init_manhattan(state_t& actual){
-    return 1;
-}
-
-int manhattan_h(int old_manhattan,
-                unsigned char old_blank,
-                unsigned char new_blank){
-    /*
-        0  1  2  3
-        4  5  6  7
-        8  9  10 11
-        12 13 14 15 
-    */
-
-    return 1;
-}
 
 
