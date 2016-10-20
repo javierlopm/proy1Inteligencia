@@ -1,0 +1,24 @@
+Introduce la cantidad máxima de niveles > Introduce un estado> LEVELS | Children 
+0 1
+1 25
+2 625
+3 15625
+4 390625
+5 9765625
+6 244140625
+Introduce la cantidad máxima de niveles > Introduce un estado> LEVELS | Children 
+0 1
+1 25
+2 600
+3 14400
+4 345600
+5 8294400
+6 199065600
+Introduce la cantidad máxima de niveles > Introduce un estado> LEVELS | Children 
+0 1
+1 25
+2 600
+3 14399
+4 345552
+5 8292673
+6 199010352

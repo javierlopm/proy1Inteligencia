@@ -11,7 +11,7 @@ echo -e "\nCompiling "$NAME".dfs_count...\n";
 make HIST=$x ./$NAME".dfs_count";
 echo -e "\nGenerating datafile for "$NAME".dfs_count...\n";
 rm file;
-echo "20" > file"-"$x;
+echo "6" > file"-"$x;
 echo $2  >> file"-"$x;
 echo -e "\nExecuting case "$NAME".dfs_count...\n";
 (./$NAME".dfs_count" < file-$x) > $1"-"$x"."salida;
