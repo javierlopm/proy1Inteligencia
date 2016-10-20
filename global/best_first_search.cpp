@@ -13,12 +13,16 @@ Copyright (C) 2013 by the PSVN Research Group, University of Alberta
 #include <vector>
 #include <iostream>
 #include <tuple>
+#include <cmath>  
 #include "priority_queue.hpp"
 
 using namespace std;
 
 #define GRAY  0
 #define BLACK 1
+
+#define ROWS 4
+#define COLS 4
 
 struct node_manhattan {
     int my_h;
@@ -31,12 +35,23 @@ inline unsigned char get_blank(int rule_id){
     return 5;
 }
 
-inline unsigned char get_first_blank(state_t& actual){
-    return 5;
+unsigned char get_first_blank(state_t& actual){
+    for (int i = 0; i < NUMVARS; ++i)
+        if (actual.vars[i] == static_cast<int8_t>(0)) 
+            return static_cast<char>(i);
 }
 
 int init_manhattan(state_t& actual){
-    return 1;
+    int h = 0;
+
+
+    for (int i = 0; i < NUMVARS; ++i)
+        if (actual.vars[i] != static_cast<int8_t>(0)){
+            h += abs( static_cast<int>(actual.vars[i]) / ROWS - i / ROWS );
+            h += abs( static_cast<int>(actual.vars[i]) % COLS - i % COLS );
+        }
+
+    return h;
 }
 
 int manhattan_h(int old_manhattan,
@@ -67,33 +82,6 @@ void destroy_node(node_manhattan *n){
     delete n; 
 }
 
-int main(int argc, char **argv) {
-    state_t state, child;   // NOTE: "child" will be a predecessor of state, not a successor
-    int actual_level, ruleid, max_bound,max_bound_backup,status;
-    int move_to_make;
-    int bwd_move;
-    
-    char first_state[255];
-    ruleid_iterator_t *actual_m_iter;
-
-
-    FILE *file; // the final state_map is written to this file if it is provided (command line argument)
-
-    cout << "Introduce un estado> ";
-    cin.ignore();
-    cin.getline(first_state,255);
-
-    // cout << first_state << flush;
-
-    status = read_state(first_state,&state);
-
-    if( status <= 0 ) {
-        cout << "Error: estado inválido.\n";
-        return 0; 
-    }
-
-    return 0;
-}
 
 /* No tree needed*/
 void best_first_search(state_t& root){
@@ -183,3 +171,36 @@ void best_first_search(state_t& root){
 
 
 
+int main(int argc, char **argv) {
+    state_t state, child;   // NOTE: "child" will be a predecessor of state, not a successor
+    int actual_level, ruleid, max_bound,max_bound_backup,status;
+    int move_to_make;
+    int bwd_move;
+    
+    char first_state[255];
+    ruleid_iterator_t *actual_m_iter;
+
+
+    FILE *file; // the final state_map is written to this file if it is provided (command line argument)
+
+    cout << "Introduce un estado> ";
+    // cin.ignore();
+    cin.getline(first_state,255);
+
+    // cout << first_state << flush;
+
+    status = read_state(first_state,&state);
+
+    if( status < 0 ) {
+        cout << "Error: estado inválido.\n";
+        return 0; 
+    }
+
+    init_manhattan(state);
+
+    return 0;
+
+    best_first_search(state);
+
+    return 0;
+}
