@@ -16,6 +16,7 @@ Copyright (C) 2013 by the PSVN Research Group, University of Alberta
 #include <tuple>
 #include <cmath>  
 #include "priority_queue.hpp"
+#include "manhattan.cpp"
 
 using namespace std;
 

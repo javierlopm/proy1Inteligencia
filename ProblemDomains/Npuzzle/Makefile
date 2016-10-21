@@ -42,7 +42,7 @@ psvn2c_abstraction.c:
 
 %.best_first_search: %.c ../../global/best_first_search.cpp
 	$(CXX) $(OPT) ../../global/best_first_search.cpp -include $< -o $@
-	# rm -f $*.c
+	rm -f $*.c
 
 %.id_dfs: %.c ../../global/id_dfs.cpp
 	$(CXX) $(OPT) ../../global/id_dfs.cpp -include $< -o $@
