@@ -13,9 +13,6 @@ using namespace std;
 void signalHandler( int signum )
 {
     cout << "na, na, na, na\n" << flush;
-
-
-
    exit(signum);  
 
 }
@@ -53,7 +50,7 @@ int main(int argc, char **argv) {
     //Perform depth-bounded searches with increasing depth bounds
     while (true){
         nodos_gen++;
-    	tuple<unsigned,unsigned,bool> p = bounded_id_dfs(state, 0, bound, init_history);
+    	tuple<unsigned,unsigned,bool> p = bounded_id_dfs(state, bound, bound, init_history);
         nodos_gen+= get<1>(p);
     	if (get<2>(p) == 1){
             t_fin = clock();
