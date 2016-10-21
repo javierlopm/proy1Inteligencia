@@ -24,62 +24,29 @@ using namespace std;
 #define ROWS 4
 #define COLS 4
 
-struct node_manhattan {
-    int my_h;
-    unsigned char blank;
-    state_t *child;
-};
 
 
-inline unsigned char get_blank(int rule_id){
-    return 5;
-}
+int per_tile_val[16][16] = { {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+                            ,{2,1,0,1,3,2,1,2,4,3,2,3,5,4,3,4}
+                            ,{3,2,1,0,4,3,2,1,5,4,3,2,6,5,4,3}
+                            ,{1,2,3,4,0,1,2,3,1,2,3,4,2,3,4,5}
+                            ,{2,1,2,3,1,0,1,2,2,1,2,3,3,2,3,4}
+                            ,{3,2,1,2,2,1,0,1,3,2,1,2,4,3,2,3}
+                            ,{4,3,2,1,3,2,1,0,4,3,2,1,5,4,3,2}
+                            ,{2,3,4,5,1,2,3,4,0,1,2,3,1,2,3,4}
+                            ,{3,2,3,4,2,1,2,3,1,0,1,2,2,1,2,3}
+                            ,{4,3,2,3,3,2,1,2,2,1,0,1,3,2,1,2}
+                            ,{5,4,3,2,4,3,2,1,3,2,1,0,4,3,2,1}
+                            ,{3,4,5,6,2,3,4,5,1,2,3,4,0,1,2,3}
+                            ,{4,3,4,5,3,2,3,4,2,1,2,3,1,0,1,2}
+                            ,{5,4,3,4,4,3,2,3,3,2,1,2,2,1,0,1}
+                            ,{6,5,4,3,5,4,3,2,4,3,2,1,3,2,1,0}};
 
-unsigned char get_first_blank(state_t& actual){
-    for (int i = 0; i < NUMVARS; ++i)
-        if (actual.vars[i] == static_cast<int8_t>(0)) 
-            return static_cast<char>(i);
-}
-
-int init_manhattan(state_t& actual){
+int manhattan_h2(state_t *actual){
     int h = 0;
-
-
     for (int i = 0; i < NUMVARS; ++i)
-        if (actual.vars[i] != static_cast<int8_t>(0)){
-            h += abs( static_cast<int>(actual.vars[i]) / ROWS - i / ROWS );
-            h += abs( static_cast<int>(actual.vars[i]) % COLS - i % COLS );
-        }
-
+        h += per_tile_val[actual->vars[i]][i];
     return h;
-}
-
-int manhattan_h(int old_manhattan,
-                unsigned char old_blank,
-                unsigned char new_blank){
-    /*
-        0  1  2  3
-        4  5  6  7
-        8  9  10 11
-        12 13 14 15 
-    */
-
-    return 1;
-}
-
-node_manhattan* make_node(int p_h,unsigned int m_b, state_t *c){
-    node_manhattan * new_node = new node_manhattan;
-
-    new_node->my_h  = p_h;
-    new_node->blank = m_b;
-    new_node->child = c;
-
-    return new_node;
-}
-
-void destroy_node(node_manhattan *n){
-    delete n->child;
-    delete n; 
 }
 
 
@@ -87,14 +54,13 @@ void destroy_node(node_manhattan *n){
 void best_first_search(state_t& root){
     int cp;
     int rule;
-    int last_h;
+    // int last_h;
     
-    PriorityQueue<node_manhattan*> pq;
+    PriorityQueue<state_t*> pq;
     ruleid_iterator_t iterator;
 
-    node_manhattan *last_node,*node_creator;
     state_t *new_state;
-    state_t *aux_child;
+    state_t *child_state;
     state_map_t *map      = new_state_map();
     state_map_t *map_dist = new_state_map();
 
@@ -102,64 +68,53 @@ void best_first_search(state_t& root){
     state_map_add(map,&root, GRAY); // distance map
     state_map_add(map,&root, 0   ); // distance map
 
-    last_h = init_manhattan(root);
 
-    last_node =  make_node(last_h,get_first_blank(root),&root);
-
-    pq.Add(0,0,last_node);
+    pq.Add(0,0,&root);
 
     while (! pq.Empty() ){
         int *actual_color;
 
-        // cp  = pq.CurrentPriority();
 
-        last_node = pq.Top();
+        new_state = pq.Top();
         pq.Pop();
-        // state_t *new_state = last_node->child;
 
-        if (is_goal(last_node->child)) return;
+        if (is_goal(new_state)) return;
 
         while ((rule = next_ruleid(&iterator)) >= 0) {
-            int g = *state_map_get(map_dist,last_node->child) + get_fwd_rule_cost(rule);
+            int g = *state_map_get(map_dist,new_state) + get_fwd_rule_cost(rule);
 
-            int hx = manhattan_h(last_node->my_h,
-                                 last_node->blank,
-                                 get_blank(rule));
+            apply_fwd_rule(rule,new_state,child_state);       
+            
+            int hx = manhattan_h2(child_state);
 
             if ( hx == numeric_limits<int>::max()) continue; 
 
-            apply_fwd_rule(rule,last_node->child,aux_child);       
 
-            actual_color = state_map_get(map,aux_child);
+            actual_color = state_map_get(map,child_state);
 
             // white color
             if (! actual_color) {
 
                 // init new node as gray with actual distance
-                node_creator = make_node(last_h,hx,aux_child);
-
-                state_map_add(map,aux_child, GRAY);
-                state_map_add(map_dist,aux_child, g);
+                state_map_add(map,child_state, GRAY);
+                state_map_add(map_dist,child_state, g);
                 
                 // add to queue with distance + heuristic cost
-                // hx = manhattan_h(last_node.my_h,last_node->blank,get_blank(rule));
-                pq.Add(g + hx,g + hx,node_creator);
+                pq.Add(g + hx,g + hx,child_state);
             }
-            else if (g < *state_map_get(map_dist, aux_child)){ // MEMORY LEAK?
+            else if (g < *state_map_get(map_dist, child_state)){ // MEMORY LEAK?
 
                 // update path with one cheaper
-                state_map_add(map_dist,aux_child, g);
+                state_map_add(map_dist,child_state, g);
 
                 if (actual_color == GRAY) continue; // pq.Modify(,,i,); // what...
                 else {
-                    state_map_add(map,aux_child, GRAY);
-                    node_creator = make_node(last_h,last_node->my_h,aux_child);
-                    pq.Add(g + hx,g + hx,node_creator);
+                    state_map_add(map,child_state, GRAY);
+                    pq.Add(g + hx,g + hx,child_state);
                 }
             }
         }
-        state_map_add(map,last_node->child, BLACK);
-        delete last_node;
+        state_map_add(map,new_state, BLACK);
     }
 }
 
@@ -196,9 +151,6 @@ int main(int argc, char **argv) {
         return 0; 
     }
 
-    init_manhattan(state);
-
-    return 0;
 
     best_first_search(state);
 
