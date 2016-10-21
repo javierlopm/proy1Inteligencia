@@ -5,9 +5,9 @@
 using namespace std;
 
 unsigned gap_h(state_t state, int numvar){
-    char sestado[50];
+    char sestado[100];
     int estado[numvar],i,j,x,c;
-    sprint_state(sestado,50, &state);
+    sprint_state(sestado,100, &state);
 
     //Convertir de manera super burra a arreglo de int
     i=0;
@@ -75,21 +75,21 @@ int main(int argc, char **argv) {
 
     // Padre
     cout << "Estado inicial: " << first_state << "\n";
-    v0= gap_h(state, 16);
+    v0= gap_h(state, 28);
     cout << "Valor heurística_gap inicial: " << v0<<"\n";
 
     // Hijo 1
     printf("\nThe child1 is: ");
     sprint_state(first_state,511, &child1);
     cout << first_state << "\n";
-    v1 = gap_h(child1, 16);
+    v1 = gap_h(child1, 28);
     cout << "Valor heurística_gap hijo1: " << v1<<"\n";
 
     // Hijo 2
     printf("\nThe child2 is: ");
     print_state(stdout, &child2);
     printf("\n");
-    v2 = gap_h(child2, 16);
+    v2 = gap_h(child2, 28);
     cout << "Valor heurística_gap  hijo2: " << v2 <<"\n";
 
     return 0;
