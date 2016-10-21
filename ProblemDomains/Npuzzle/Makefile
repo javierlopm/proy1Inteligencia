@@ -3,7 +3,8 @@ CXX = g++ -std=gnu++11
 #OPT = -g -Wall -O3 -Wno-unused-function -Wno-unused-variable
 OPT = -g -Wall  -Wno-unused-function -Wno-unused-variable
 HIST=0
-PSVNOPT = --state_map --no_abstraction --backwards_moves --history_len=$(HIST)
+PSVNOPT = --state_map  --backwards_moves --history_len=$(HIST) --
+# PSVNOPT = --state_map --no_abstraction --backwards_moves --history_len=$(HIST) --
 
 psvn2c_core.c:
 	cp ../../src/psvn2c_core.c ./psvn2c_core.c
@@ -40,6 +41,10 @@ psvn2c_abstraction.c:
 	$(CXX) $(OPT) ../../global/dfs_count.cpp -include $< -o $@
 	rm -f $*.c
 
+%.dist_pdb: %.c ../../global/dist_pdb.cpp
+	$(CXX) $(OPT) ../../global/dist_pdb.cpp -include $< -o $@
+	rm -f $*.c
+
 %.best_first_search: %.c ../../global/best_first_search.cpp
 	$(CXX) $(OPT) ../../global/best_first_search.cpp -include $< -o $@
 	rm -f $*.c
@@ -50,6 +55,19 @@ psvn2c_abstraction.c:
 
 %.ida_gap: %.c ../../global/ida_gap.cpp
 	$(CXX) $(OPT) ../../global/ida_gap.cpp -include $< -o $@
+
+abstractor:
+	$(CXX) $(OPT) ../../src/abstractor.cpp ../../src/psvn.cpp -o $@
+
+%.pdb: abstractor
+	@rm -f `basename $*`.abst `basename $*`.pdb `basename $*`.psvn
+	./abstractor `dirname $*`.psvn `basename $*` < `basename $*`.txt
+	make `basename $*`.distSummary
+	echo Calculating `basename $*.pdb` ...
+	@./`basename $*`.distSummary `basename $*`.pdb
+
+%.dist_pdb: %.c ../global/dist_pdb.cpp
+	$(CXX) $(OPT) ../global/dist_pdb.cpp -include $< -o $@
 	rm -f $*.c
 
 .PHONY: clean

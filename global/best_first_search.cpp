@@ -8,7 +8,7 @@ provided as a command line argument, it prints the state_map it builds to that f
 Copyright (C) 2013 by the PSVN Research Group, University of Alberta
 */
 
-
+#include <time.h>
 #include <limits>
 #include <vector>
 #include <iostream>
@@ -61,21 +61,33 @@ int manhattan_h2(state_t *actual){
     return h;
 }
 
+unsigned gap_h(state_t *state){
+    int c;
+
+    //Calculo de heuristica
+    c=0;
+    for(int x = 0; x < NUMVARS-1; x++)
+        if (abs(state->vars[x]-state->vars[x+1]) > 1) c++;
+
+    return c;
+}
 
 /* No tree needed*/
-void best_first_search(state_t& root){
+tuple<unsigned,unsigned> best_first_search(state_t& root){
     int cp;
     int rule;
+    unsigned long num_nodes = 0;
     // int last_h;
     
     PriorityQueue<state_t*> pq;
     ruleid_iterator_t iterator;
 
     state_t *new_state;
+    state_t aux_child;
     state_t *child_state;
     state_map_t *map      = new_state_map();
     state_map_t *map_dist = new_state_map();
-    state_map_t *index    = new_state_map();
+    // state_map_t *index    = new_state_map();
 
 
     state_map_add(map     ,&root, GRAY); // color map
@@ -84,25 +96,25 @@ void best_first_search(state_t& root){
 
     state_map_add(map_dist,&root, pq.Add(0,1,&root)  ); // distance map
     
-    num_nodes++;
+    // num_nodes++;
 
     while (! pq.Empty() ){
+        // cout << "pasando\n" << flush;
         int *actual_color;
 
         new_state = pq.Top();
         pq.Pop();
 
         if (is_goal(new_state)){ 
-            cout << "we did it\n" << flush;
-            print_state(stdout,new_state);
-            return;
+            return make_tuple(*state_map_get(map_dist,new_state),num_nodes);
         }
 
         init_fwd_iter(&iterator,new_state);
+        num_nodes++;
 
-        print_state(stdout,new_state);
+        // print_state(stdout,new_state);
 
-        cout << " " << manhattan_h2(new_state) << "\n";
+        // cout << " " << manhattan_h2(new_state) << "\n";
         // cout << hx << "\n";
 
         
@@ -112,8 +124,8 @@ void best_first_search(state_t& root){
 
             int g = *state_map_get(map_dist,new_state) + get_fwd_rule_cost(rule);
             // cout << g << "\n" << flush;
+            // child_state = new state_t;
             child_state = new state_t;
-
             apply_fwd_rule(rule,new_state,child_state);       
             
             // cout << "\n";
@@ -124,7 +136,8 @@ void best_first_search(state_t& root){
 
             // print_state(stdout,child_state);
 
-            int hx = manhattan_h2(child_state);
+            // int hx = manhattan_h2(child_state);
+            int hx = gap_h(child_state);
 
             if ( hx == numeric_limits<int>::max()) continue; 
 
@@ -133,12 +146,16 @@ void best_first_search(state_t& root){
 
             // white color
             if (! actual_color) {
+                // child_state = new state_t;
+                // copy_state(child_state,*aux_child);
 
                 // init new node as gray with actual distance
                 state_map_add(map,child_state, GRAY);
                 state_map_add(map_dist,child_state, g);
-                state_map_add(index,child_state, pq.Add(g + hx,1,child_state));
-                
+                pq.Add(g + hx,1,child_state);
+
+                // state_map_add(index,child_state, new_ind );
+                // cout << "adding index: " << new_ind << "\n"; 
                 // add to queue with distance + heuristic cost
                 
                 // cout << num_nodes << "\n";
@@ -150,18 +167,34 @@ void best_first_search(state_t& root){
                 state_map_add(map_dist,child_state, g);
 
                 if (*actual_color == GRAY){
-                    pq.Modify(g+hx,0,*state_map_get(index,child_state),child_state);
+
+                    // child_state = new state_t;
+                    // copy_state(child_state,*aux_child);
+
+                    pq.Add(g + hx,1,child_state);
+                    // cout << g+hx << " " <<  *state_map_get(index,child_state) << "\n";
+                    // continue;
+                    // try {
+                    //     /* code */
+                    //     pq.Modify(g+hx,1,*state_map_get(index,child_state),child_state);
+                    // }
+                    // catch(const std::exception& e) {
+                    //     std::cerr << e.what() << '\n';
+                    // }
                 } // pq.Modify(,,i,); // what...
                 else {
                     state_map_add(map,child_state, GRAY);
-                    state_map_add(index,child_state, pq.Add(g + hx,1,child_state));
+                    // state_map_add(index,child_state, pq.Add(g + hx,1,child_state));
                 }
             }
         }
         state_map_add(map,new_state, BLACK);
-
+        if (new_state != &root)
+            delete new_state;
     }
-    cout << "failed\n" << flush;
+
+    return make_tuple(0,0);
+    // cout << "failed\n" << flush;
 }
 
 // unsigned char blank_list[48] = {
@@ -177,6 +210,7 @@ int main(int argc, char **argv) {
     int actual_level, ruleid, max_bound,max_bound_backup,status;
     int move_to_make;
     int bwd_move;
+    clock_t t_ini, t_fin;
     
     char first_state[255];
     ruleid_iterator_t *actual_m_iter;
@@ -196,10 +230,26 @@ int main(int argc, char **argv) {
         return 0; 
     }
 
-    cout << "X, a*, 15puzzle, " << "\""<< first_state << "\", \n" << flush ;
+    int h0 = gap_h(&state);
 
+    cout << "X, a*,gap,pancake28, " << "\""<< first_state << "\", \n" << flush ;
 
-    best_first_search(state);
+    signal(SIGALRM,signalHandler);
+    signal(SIGKILL,signalHandler);
+
+    t_ini = clock();
+    tuple<unsigned,unsigned> dis_num = best_first_search(state);
+    t_fin = clock();
+
+    double secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
+
+/*    costo h0  generated time gen_per_sec*/
+    cout << 
+    get<0>(dis_num) <<","  << 
+    h0              << "," << 
+    get<1>(dis_num) << "," <<
+    secs            << "," <<
+    get<1>(dis_num) / secs << "\n" << flush;;
 
     return 0;
 }
