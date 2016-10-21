@@ -60,6 +60,16 @@ int manhattan_h2(state_t *actual){
     return h;
 }
 
+unsigned gap_h(state_t *state){
+    int c;
+
+    //Calculo de heuristica
+    c=0;
+    for(int x = 0; x < NUMVARS-1; x++)
+        if (abs(state->vars[x]-state->vars[x+1]) > 1) c++;
+
+    return c;
+}
 
 /* No tree needed*/
 void best_first_search(state_t& root){
@@ -83,9 +93,10 @@ void best_first_search(state_t& root){
 
     state_map_add(map_dist,&root, pq.Add(0,1,&root)  ); // distance map
     
-    num_nodes++;
+    // num_nodes++;
 
     while (! pq.Empty() ){
+        cout << "pasando\n" << flush;
         int *actual_color;
 
         new_state = pq.Top();
@@ -99,9 +110,9 @@ void best_first_search(state_t& root){
 
         init_fwd_iter(&iterator,new_state);
 
-        print_state(stdout,new_state);
+        // print_state(stdout,new_state);
 
-        cout << " " << manhattan_h2(new_state) << "\n";
+        // cout << " " << manhattan_h2(new_state) << "\n";
         // cout << hx << "\n";
 
         
@@ -123,7 +134,8 @@ void best_first_search(state_t& root){
 
             // print_state(stdout,child_state);
 
-            int hx = manhattan_h2(child_state);
+            // int hx = manhattan_h2(child_state);
+            int hx = gap_h(child_state);
 
             if ( hx == numeric_limits<int>::max()) continue; 
 
