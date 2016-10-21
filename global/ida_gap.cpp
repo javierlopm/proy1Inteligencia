@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     }
 
 //-------------------------------------------------------
-    cout << "X, ida_gap, pancake28, " << "\""<< first_state << "\", " << flush ;
+    cout << "X, ida, gap, pancake28, " << "\""<< first_state << "\", " << flush ;
 
     bound=gap_h(&state,NUMVARS);
     //int costo = 0;
