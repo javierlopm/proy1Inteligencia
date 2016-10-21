@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
         nodos_gen++;
     	tuple<unsigned,unsigned,bool> p = bounded_id_dfs(state, bound, bound, init_history);
         nodos_gen+= get<1>(p);
+        bound =  get<1>(p);
     	if (get<2>(p) == 1){
             t_fin = clock();
             secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
@@ -62,7 +63,6 @@ int main(int argc, char **argv) {
             cout << get<0>(p)<< ", "<< costo << ", " << h0 << ", "<< nodos_gen << ", " << secs << ", "<< genxs <<"\n" << flush;
  			return 0;
     	}	
-    	bound =  get<1>(p);
     }
 
 }
