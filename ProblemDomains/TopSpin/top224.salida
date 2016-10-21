@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 Introduce la cantidad máxima de niveles > Introduce un estado> LEVELS | Children 
+=======
+LEVELS | Children 
+>>>>>>> master
 0 1
 1 22
 2 484
@@ -7,6 +11,10 @@ Introduce la cantidad máxima de niveles > Introduce un estado> LEVELS | Childre
 5 5153632
 6 113379904
 7 2494357888
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 Introduce la cantidad máxima de niveles > Introduce un estado> LEVELS | Children 
 0 1
 1 22
