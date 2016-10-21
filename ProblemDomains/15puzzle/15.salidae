@@ -1,0 +1,12 @@
+X, id_dfs, tower14_4, "10 B 2 4 5 1 6 12 11 13 9 7 15 3 14 8", na, na, na, na
+X, id_dfs, tower14_4, "12 5 13 11 2 10 B 9 7 8 4 3 14 6 15 1", na, na, na, na
+X, id_dfs, tower14_4, "10 2 8 4 15 B 1 14 11 13 3 6 9 7 5 12", na, na, na, na
+X, id_dfs, tower14_4, "10 8 B 12 3 7 6 2 1 14 4 11 15 13 9 5", na, na, na, na
+X, id_dfs, tower14_4, "14 9 12 13 15 4 8 10 B 2 1 7 3 11 5 6", na, na, na, na
+X, id_dfs, tower14_4, "12 11 B 8 10 2 13 15 5 4 7 3 6 9 14 1", na, na, na, na
+X, id_dfs, tower14_4, "13 8 14 3 9 1 B 7 15 5 4 10 12 2 6 11", na, na, na, na
+X, id_dfs, tower14_4, "3 15 2 5 11 6 4 7 12 9 1 B 13 14 10 8", na, na, na, na
+X, id_dfs, tower14_4, "5 11 6 9 4 13 12 B 8 2 15 10 1 7 3 14", na, na, na, na
+X, id_dfs, tower14_4, "5 B 15 8 4 6 1 14 10 11 3 9 7 12 2 13", na, na, na, na
+X, id_dfs, tower14_4, "15 14 6 7 10 1 B 11 12 8 4 9 2 5 13 3", na, na, na, na
+X, id_dfs, tower14_4, "11 14 13 1 2 3 12 4 15 7 9 5 10 6 8 B", na, na, na, na

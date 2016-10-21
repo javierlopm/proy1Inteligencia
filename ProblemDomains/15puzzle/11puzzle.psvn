@@ -1,0 +1,101 @@
+# 1x3 sliding tile puzzle, standard representation
+
+DOMAIN tile 12   # define a domain called "tile" consisting of 3 constants
+       b 1 2 3 4 5 6 7 8 9 10 11   # these are the constants (b is for the blank)
+
+12      # a state is a vector of length 3
+
+tile tile tile tile tile tile tile tile tile tile tile tile 
+
+ b X - - - - - - - - - - => X b - - - - - - - - - -
+ X b - - - - - - - - - - => b X - - - - - - - - - - 
+ - b X - - - - - - - - - => - X b - - - - - - - - -
+ - X b - - - - - - - - - => - b X - - - - - - - - - 
+ - - b X - - - - - - - - => - - X b - - - - - - - -
+ - - X b - - - - - - - - => - - b X - - - - - - - -
+
+ - - - - b X - - - - - - => - - - - X b - - - - - -
+ - - - - X b - - - - - - => - - - - b X - - - - - - 
+ - - - - - b X - - - - - => - - - - - X b - - - - -
+ - - - - - X b - - - - - => - - - - - b X - - - - - 
+ - - - - - - b X - - - - => - - - - - - X b - - - - 
+ - - - - - - X b - - - - => - - - - - - b X - - - - 
+
+ - - - - - - - - b X - - => - - - - - - - - X b - -
+ - - - - - - - - X b - - => - - - - - - - - b X - - 
+ - - - - - - - - - b X - => - - - - - - - - - X b -
+ - - - - - - - - - X b - => - - - - - - - - - b X - 
+ - - - - - - - - - - b X => - - - - - - - - - - X b 
+ - - - - - - - - - - X b => - - - - - - - - - - b X 
+
+ b - - - X - - - - - - - => X - - - b - - - - - - -
+ X - - - b - - - - - - - => b - - - X - - - - - - -
+ - b - - - X - - - - - - => - X - - - b - - - - - - 
+ - X - - - b - - - - - - => - b - - - X - - - - - - 
+ - - b - - - X - - - - - => - - X - - - b - - - - -  
+ - - X - - - b - - - - - => - - b - - - X - - - - -  
+ - - - b - - - X - - - - => - - - X - - - b - - - -   
+ - - - X - - - b - - - - => - - - b - - - X - - - - 
+ - - - - b - - - X - - - => - - - - X - - - b - - -    
+ - - - - X - - - b - - - => - - - - b - - - X - - - 
+ - - - - - b - - - X - - => - - - - - X - - - b - -     
+ - - - - - X - - - b - - => - - - - - b - - - X - -
+ - - - - - - b - - - X - => - - - - - - X - - - b -      
+ - - - - - - X - - - b - => - - - - - - b - - - X - 
+ - - - - - - - b - - - X => - - - - - - - X - - - b      
+ - - - - - - - X - - - b => - - - - - - - b - - - X  
+
+
+#b X - - - - - - - - - - - - - - => X b - - - - - - - - - - - - - - LABEL RIGHT_TOP     COST 1
+#- b X - - - - - - - - - - - - - => - X b - - - - - - - - - - - - - LABEL RIGHT_TOP     COST 1
+#- - b X - - - - - - - - - - - - => - - X b - - - - - - - - - - - - LABEL RIGHT_TOP     COST 1
+#- - - - b X - - - - - - - - - - => - - - - X b - - - - - - - - - - LABEL RIGHT_MIDDLE1 COST 1
+#- - - - - b X - - - - - - - - - => - - - - - X b - - - - - - - - - LABEL RIGHT_MIDDLE1 COST 1
+#- - - - - - b X - - - - - - - - => - - - - - - X b - - - - - - - - LABEL RIGHT_MIDDLE1 COST 1
+#- - - - - - - - b X - - - - - - => - - - - - - - - X b - - - - - - LABEL RIGHT_MIDDLE2 COST 1
+#- - - - - - - - - b X - - - - - => - - - - - - - - - X b - - - - - LABEL RIGHT_MIDDLE2 COST 1
+#- - - - - - - - - - b X - - - - => - - - - - - - - - - X b - - - - LABEL RIGHT_MIDDLE2 COST 1
+#- - - - - - - - - - - - b X - - => - - - - - - - - - - - - X b - - LABEL RIGHT_BOTTOM  COST 1
+#- - - - - - - - - - - - - b X - => - - - - - - - - - - - - - X b - LABEL RIGHT_BOTTOM  COST 1
+#- - - - - - - - - - - - - - b X => - - - - - - - - - - - - - - X b LABEL RIGHT_BOTTOM  COST 1
+#
+#X b - - - - - - - - - - - - - - => b X - - - - - - - - - - - - - -  LABEL LEFT_TOP     COST 1
+#- X b - - - - - - - - - - - - - => - b X - - - - - - - - - - - - -  LABEL LEFT_TOP     COST 1
+#- - X b - - - - - - - - - - - - => - - b X - - - - - - - - - - - -  LABEL LEFT_TOP     COST 1
+#- - - - X b - - - - - - - - - - => - - - - b X - - - - - - - - - -  LABEL LEFT_MIDDLE1 COST 1
+#- - - - - X b - - - - - - - - - => - - - - - b X - - - - - - - - -  LABEL LEFT_MIDDLE1 COST 1
+#- - - - - - X b - - - - - - - - => - - - - - - b X - - - - - - - -  LABEL LEFT_MIDDLE1 COST 1
+#- - - - - - - - X b - - - - - - => - - - - - - - - b X - - - - - -  LABEL LEFT_MIDDLE2 COST 1
+#- - - - - - - - - X b - - - - - => - - - - - - - - - b X - - - - -  LABEL LEFT_MIDDLE2 COST 1
+#- - - - - - - - - - X b - - - - => - - - - - - - - - - b X - - - -  LABEL LEFT_MIDDLE2 COST 1
+#- - - - - - - - - - - - X b - - => - - - - - - - - - - - - b X - -  LABEL LEFT_BOTTOM  COST 1
+#- - - - - - - - - - - - - X b - => - - - - - - - - - - - - - b X -  LABEL LEFT_BOTTOM  COST 1
+#- - - - - - - - - - - - - - X b => - - - - - - - - - - - - - - b X  LABEL LEFT_BOTTOM  COST 1
+#
+#b - - - X - - - - - - - - - - - => X - - - b - - - - - - - - - - - LABEL DOWN_TOP     COST 1
+#- b - - - X - - - - - - - - - - => - X - - - b - - - - - - - - - - LABEL DOWN_TOP     COST 1
+#- - b - - - X - - - - - - - - - => - - X - - - b - - - - - - - - - LABEL DOWN_TOP     COST 1
+#- - - b - - - X - - - - - - - - => - - - X - - - b - - - - - - - - LABEL DOWN_TOP     COST 1
+#- - - - b - - - X - - - - - - - => - - - - X - - - b - - - - - - - LABEL DOWN_MIDDLE1 COST 1
+#- - - - - b - - - X - - - - - - => - - - - - X - - - b - - - - - - LABEL DOWN_MIDDLE1 COST 1
+#- - - - - - b - - - X - - - - - => - - - - - - X - - - b - - - - - LABEL DOWN_MIDDLE1 COST 1
+#- - - - - - - b - - - X - - - - => - - - - - - - X - - - b - - - - LABEL DOWN_MIDDLE1 COST 1
+#- - - - - - - - b - - - X - - - => - - - - - - - - X - - - b - - - LABEL DOWN_MIDDLE2 COST 1
+#- - - - - - - - - b - - - X - - => - - - - - - - - - X - - - b - - LABEL DOWN_MIDDLE2 COST 1
+#- - - - - - - - - - b - - - X - => - - - - - - - - - - X - - - b - LABEL DOWN_MIDDLE2 COST 1
+#- - - - - - - - - - - b - - - X => - - - - - - - - - - - X - - - b LABEL DOWN_MIDDLE2 COST 1
+#
+#X - - - b - - - - - - - - - - - => b - - - X - - - - - - - - - - - LABEL UP_MIDDLE1 COST 1
+#- X - - - b - - - - - - - - - - => - b - - - X - - - - - - - - - - LABEL UP_MIDDLE1 COST 1
+#- - X - - - b - - - - - - - - - => - - b - - - X - - - - - - - - - LABEL UP_MIDDLE1 COST 1
+#- - - X - - - b - - - - - - - - => - - - b - - - X - - - - - - - - LABEL UP_MIDDLE1 COST 1
+#- - - - X - - - b - - - - - - - => - - - - b - - - X - - - - - - - LABEL UP_MIDDLE2 COST 1
+#- - - - - X - - - b - - - - - - => - - - - - b - - - X - - - - - - LABEL UP_MIDDLE2 COST 1
+#- - - - - - X - - - b - - - - - => - - - - - - b - - - X - - - - - LABEL UP_MIDDLE2 COST 1
+#- - - - - - - X - - - b - - - - => - - - - - - - b - - - X - - - - LABEL UP_MIDDLE2 COST 1
+#- - - - - - - - X - - - b - - - => - - - - - - - - b - - - X - - - LABEL UP_BOTTOM  COST 1
+#- - - - - - - - - X - - - b - - => - - - - - - - - - b - - - X - - LABEL UP_BOTTOM  COST 1
+#- - - - - - - - - - X - - - b - => - - - - - - - - - - b - - - X - LABEL UP_BOTTOM  COST 1
+#- - - - - - - - - - - X - - - b => - - - - - - - - - - - b - - - X LABEL UP_BOTTOM  COST 1
+
+GOAL b 1 2 3 4 5 6 7 8 9 10 11
