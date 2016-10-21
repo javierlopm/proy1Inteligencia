@@ -74,28 +74,35 @@ void best_first_search(state_t& root){
     state_t *child_state;
     state_map_t *map      = new_state_map();
     state_map_t *map_dist = new_state_map();
+    state_map_t *index    = new_state_map();
 
 
     state_map_add(map     ,&root, GRAY); // color map
     state_map_add(map_dist,&root, 0   ); // distance map
 
 
-    pq.Add(0,0,&root);
+    state_map_add(map_dist,&root, pq.Add(0,1,&root)  ); // distance map
+    
+    num_nodes++;
 
     while (! pq.Empty() ){
         int *actual_color;
-
 
         new_state = pq.Top();
         pq.Pop();
 
         if (is_goal(new_state)){ 
-            cout << "we did it" << flush;
+            cout << "we did it\n" << flush;
             print_state(stdout,new_state);
             return;
         }
 
         init_fwd_iter(&iterator,new_state);
+
+        print_state(stdout,new_state);
+
+        cout << " " << manhattan_h2(new_state) << "\n";
+        // cout << hx << "\n";
 
         
         // cout << "estado nuevo\n" << flush;
@@ -129,25 +136,31 @@ void best_first_search(state_t& root){
                 // init new node as gray with actual distance
                 state_map_add(map,child_state, GRAY);
                 state_map_add(map_dist,child_state, g);
+                state_map_add(index,child_state, pq.Add(g + hx,1,child_state));
                 
                 // add to queue with distance + heuristic cost
-                pq.Add(g + hx,g + hx,child_state);
+                
+                // cout << num_nodes << "\n";
+                
             }
             else if (g < *state_map_get(map_dist, child_state)){ // MEMORY LEAK?
 
                 // update path with one cheaper
                 state_map_add(map_dist,child_state, g);
 
-                if (actual_color == GRAY) continue; // pq.Modify(,,i,); // what...
+                if (*actual_color == GRAY){
+                    pq.Modify(g+hx,0,*state_map_get(index,child_state),child_state);
+                } // pq.Modify(,,i,); // what...
                 else {
                     state_map_add(map,child_state, GRAY);
-                    pq.Add(g + hx,g + hx,child_state);
+                    state_map_add(index,child_state, pq.Add(g + hx,1,child_state));
                 }
-
             }
         }
         state_map_add(map,new_state, BLACK);
+
     }
+    cout << "failed\n" << flush;
 }
 
 // unsigned char blank_list[48] = {
@@ -170,7 +183,6 @@ int main(int argc, char **argv) {
 
     FILE *file; // the final state_map is written to this file if it is provided (command line argument)
 
-    cout << "Introduce un estado> ";
     // cin.ignore();
     cin.getline(first_state,255);
 
@@ -183,7 +195,7 @@ int main(int argc, char **argv) {
         return 0; 
     }
 
-    cout << "X, a*, 15puzzle, " << "\""<< first_state << "\", " << flush ;
+    cout << "X, a*, 15puzzle, " << "\""<< first_state << "\", \n" << flush ;
 
 
     best_first_search(state);
