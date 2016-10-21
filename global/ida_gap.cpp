@@ -56,7 +56,10 @@ int main(int argc, char **argv) {
             t_fin = clock();
             secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
             genxs = nodos_gen / secs;
-            cout << get<0>(p)<< ", "<< nodos_gen << ", "<< secs << ", "<< genxs <<"\n" << flush;
+
+            int h0 = gap_h(&state);
+            int costo = get<1>(p);
+            cout << get<0>(p)<< ", "<< costo << ", " << h0 << ", "<< nodos_gen << ", " << secs << ", "<< genxs <<"\n" << flush;
  			return 0;
     	}	
     	bound =  get<1>(p);
