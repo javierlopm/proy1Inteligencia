@@ -22,15 +22,15 @@ psvn2c_abstraction.c:
 
 .PRECIOUS: %.c
 
-%.succ: %.c ../global/succ.c
+%.succ: %.c ../../global/succ.c
 	$(CC) $(OPT) ../../global/succ.c -include $< -o $@
 	rm -f $*.c
 
-%.dist: %.c ../global/dist.cpp
+%.dist: %.c ../../global/dist.cpp
 	$(CXX) $(OPT) ../../global/dist.cpp -include $< -o $@
 	rm -f $*.c
 
-%.distSummary: %.c ../global/distSummary.cpp
+%.distSummary: %.c ../../global/distSummary.cpp
 	$(CXX) $(OPT) ../../global/distSummary.cpp -include $< -o $@
 	rm -f $*.c
 
@@ -44,7 +44,7 @@ abstractor:
 	echo Calculating `basename $*.pdb` ...
 	@./`basename $*`.distSummary `basename $*`.pdb
 
-%.dist_pdb: %.c ../global/dist_pdb.cpp
+%.dist_pdb: %.c ../../global/dist_pdb.cpp
 	$(CXX) $(OPT) ../../global/dist_pdb.cpp -include $< -o $@
 	rm -f $*.c
 
