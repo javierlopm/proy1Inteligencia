@@ -35,7 +35,7 @@ psvn2c_abstraction.c:
 	rm -f $*.c
 
 abstractor:
-	$(CXX) $(OPT) ../../src/abstractor.cpp ../src/psvn.cpp -o $@
+	$(CXX) $(OPT) ../../src/abstractor.cpp ../../src/psvn.cpp -o $@
 
 %.pdb: abstractor
 	@rm -f `basename $*`.abst `basename $*`.pdb `basename $*`.psvn

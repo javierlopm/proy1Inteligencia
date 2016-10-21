@@ -1,11 +1,10 @@
-project 1
-project 2
-project 3
-project 5
-project 6
-project 9
-project 10
-project 13
-project 14
-project 15
-project 16
+map TILE 1 B
+map TILE 2 B
+map TILE 4 B
+map TILE 5 B
+map TILE 8 B
+map TILE 9 B
+map TILE 12 B
+map TILE 13 B
+map TILE 14 B
+map TILE 15 B
