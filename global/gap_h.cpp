@@ -10,9 +10,7 @@ unsigned gap_h(state_t state, int numvar){
     //Calculo de heuristica
     c=0;
     for(int x = 0; x < numvar-1; x++){
-        if (abs(state.vars[x]-state.vars[x+1]) > 1){
-          c++;  
-        }
+        if (abs(state.vars[x]-state.vars[x+1]) > 1) c++;
 
     }
     return c;
