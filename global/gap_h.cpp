@@ -5,44 +5,14 @@
 using namespace std;
 
 unsigned gap_h(state_t state, int numvar){
-    char sestado[100];
-    int estado[numvar],i,j,x,c;
-    sprint_state(sestado,100, &state);
-
-    //Convertir de manera super burra a arreglo de int
-    // i=0;
-    // j=0;
-    // while (i < numvar){
-    //     if (sestado[j+1] == ' ') {
-    //         estado[i] = sestado[j] - '0';
-    //         i++;
-    //         j+=2;
-    //     }
-    //     else if (sestado[j+2] == ' ') {
-    //         estado[i] = (sestado[j] - '0')*10;
-    //         estado[i] += sestado[j+1] - '0';
-    //         i++;
-    //         j+=3;
-    //     }
-
-    // }
-
-    //Imprimir estado
-    x=0;
-    while (x < numvar){
-        cout << "i[" << x << "]: "<< static_cast<int>(state.vars[x]) << "\n";
-        x++;
-    }
+    int c;
 
     //Calculo de heuristica
-    x=0;
     c=0;
-    while (x < numvar-1){
+    for(int x = 0; x < numvar-1; x++){
         if (abs(state.vars[x]-state.vars[x+1]) > 1){
-          c++;
-          cout << "Posición donde ocurre el gap :" << x << "\n";  
+          c++;  
         }
-        x++;
 
     }
     return c;
