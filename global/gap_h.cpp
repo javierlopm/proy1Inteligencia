@@ -13,7 +13,7 @@ unsigned gap_h(state_t *state, int numvar){
         if (abs(state->vars[x]-state->vars[x+1]) > 1) c++;
 
     }
-    if (abs(state.vars[numvar-1]-numvar) > 1) c++;
+    if (abs(state->vars[numvar-1]-numvar) > 1) c++;
 
     return c;
 }
