@@ -48,6 +48,10 @@ psvn2c_abstraction.c:
 	$(CXX) $(OPT) ../../global/id_dfs.cpp -include $< -o $@
 	rm -f $*.c
 
+%.ida_gap: %.c ../../global/ida_gap.cpp
+	$(CXX) $(OPT) ../../global/ida_gap.cpp -include $< -o $@
+	rm -f $*.c
+
 .PHONY: clean
 clean:
 	rm -fr *.succ *.dist *.distSummary *.generator psvn2c_core.c psvn2c_state_map.c psvn2c_abstraction.c *.dSYM *.o *~
