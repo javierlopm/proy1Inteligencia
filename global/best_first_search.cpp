@@ -12,11 +12,22 @@ Copyright (C) 2013 by the PSVN Research Group, University of Alberta
 #include <limits>
 #include <vector>
 #include <iostream>
+#include <csignal>
 #include <tuple>
 #include <cmath>  
 #include "priority_queue.hpp"
 
 using namespace std;
+
+
+void signalHandler( int signum )
+{
+    cout << "na, na, na, na\n" << flush;
+
+   exit(signum);  
+}
+
+
 
 #define GRAY  0
 #define BLACK 1
@@ -65,8 +76,8 @@ void best_first_search(state_t& root){
     state_map_t *map_dist = new_state_map();
 
 
-    state_map_add(map,&root, GRAY); // distance map
-    state_map_add(map,&root, 0   ); // distance map
+    state_map_add(map     ,&root, GRAY); // color map
+    state_map_add(map_dist,&root, 0   ); // distance map
 
 
     pq.Add(0,0,&root);
@@ -78,13 +89,33 @@ void best_first_search(state_t& root){
         new_state = pq.Top();
         pq.Pop();
 
-        if (is_goal(new_state)) return;
+        if (is_goal(new_state)){ 
+            cout << "we did it" << flush;
+            print_state(stdout,new_state);
+            return;
+        }
+
+        init_fwd_iter(&iterator,new_state);
+
+        
+        // cout << "estado nuevo\n" << flush;
 
         while ((rule = next_ruleid(&iterator)) >= 0) {
+
             int g = *state_map_get(map_dist,new_state) + get_fwd_rule_cost(rule);
+            // cout << g << "\n" << flush;
+            child_state = new state_t;
 
             apply_fwd_rule(rule,new_state,child_state);       
             
+            // cout << "\n";
+            // cout << "(" << rule <<") ";
+            // print_state(stdout,new_state);
+            // cout << " => ";
+            // print_state(stdout,child_state);
+
+            // print_state(stdout,child_state);
+
             int hx = manhattan_h2(child_state);
 
             if ( hx == numeric_limits<int>::max()) continue; 
@@ -112,6 +143,7 @@ void best_first_search(state_t& root){
                     state_map_add(map,child_state, GRAY);
                     pq.Add(g + hx,g + hx,child_state);
                 }
+
             }
         }
         state_map_add(map,new_state, BLACK);
@@ -150,6 +182,8 @@ int main(int argc, char **argv) {
         cout << "Error: estado inválido.\n";
         return 0; 
     }
+
+    cout << "X, a*, 15puzzle, " << "\""<< first_state << "\", " << flush ;
 
 
     best_first_search(state);
