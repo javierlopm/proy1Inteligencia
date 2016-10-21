@@ -57,8 +57,8 @@ int main(int argc, char **argv) {
             secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
             genxs = nodos_gen / secs;
 
-            int h0 = gap_h(&state);
-            int costo = get<1>(p);
+            int h0 = gap_h(&state,NUMVARS);
+            int costo = static_cast<int>get<1>(p);
             cout << get<0>(p)<< ", "<< costo << ", " << h0 << ", "<< nodos_gen << ", " << secs << ", "<< genxs <<"\n" << flush;
  			return 0;
     	}	
