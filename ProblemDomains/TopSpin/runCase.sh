@@ -2,9 +2,11 @@
 
 NAME=$1
 ARG=$2
-#1 4 2 3 5 8 6 10 7 9 B 11
+# 16 15 14 13 12 11 10 9 8 7 6 5 4 1 0 17 18 19 20 21 22 23 24 25 3 2
+# 6 5 4 0 7 8 9 10 11 12 21 20 19 18 17 16 15 14 13 1 2 3 22 23
 echo $1
 for x in $(seq 3);
+#for x in $(echo 3);
 do x=$(($x-1));
 echo -e "\n RUNNING CASE "$x"\n";
 echo -e "\nCompiling "$NAME".dfs_count...\n";

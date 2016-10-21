@@ -37,7 +37,7 @@ psvn2c_abstraction.c:
 
 %.dfs_count: %.c ../../global/dfs_count.cpp
 	$(CXX) $(OPT) ../../global/dfs_count.cpp -include $< -o $@
-	rm -f $*.c
+	# rm -f $*.c
 
 %.best_first_search: %.c ../../global/best_first_search.cpp
 	$(CXX) $(OPT) ../../global/best_first_search.cpp -include $< -o $@
