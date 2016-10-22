@@ -38,9 +38,9 @@ int main(int argc, char **argv) {
     cin >> Epsilon;
     cin.ignore();
     cin.getline(first_state,511);
-    for (int i=0; i < 28; i++)
-        cout << first_state[i]<< " ";
-    cout << "\n";
+    //for (int i=0; i < 28; i++)
+    //    cout << first_state[i]<< " ";
+    //cout << "\n";
 
     t_ini = clock();
     status = read_state(first_state,&state);
