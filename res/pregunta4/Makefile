@@ -5,7 +5,7 @@
 CC = gcc
 CXX = g++ -std=gnu++11
 OPT = -g -Wall -O3 -Wno-unused-function -Wno-unused-variable
-PSVNOPT = --state_map --backward_moves --abstraction --fwd_history_len=0 --bwd_history_len=0
+PSVNOPT = --state_map --backward_moves --abstraction --fwd_history_len=0 --bwd_history_len=1
 
 psvn2c_core.c:
 	cp ../../src/psvn2c_core.c ./psvn2c_core.c
@@ -49,8 +49,12 @@ psvn2c_abstraction.c:
 %.ida_gap: %.c ../../global/ida_gap.cpp
 	$(CXX) $(OPT) ../../global/ida_gap.cpp -include $< -o $@
 
+%.ida_man: %.c ../../global/ida_man.cpp
+	$(CXX) $(OPT) ../../global/ida_man.cpp -include $< -o $@
+
 %.ida_pdb: %.c ../../global/ida_pdb.cpp
 	$(CXX) $(OPT) ../../global/ida_pdb.cpp -include $< -o $@
+
 
 %.wida_pdb: %.c ../../global/wida_pdb.cpp
 	$(CXX) $(OPT) ../../global/wida_pdb.cpp -include $< -o $@

@@ -81,7 +81,7 @@ genere una tabla de resultados en formato .csv que sea similar a la
 siguiente:
 
 grupo, algorithm, domain, instance, cost, generated, time, gen_per_sec
-X, dfid, pancake16, "15 14 13 12 11 0 1 2 3 4 5 6 7 8 9 10", 2, 3333, 0.000167, 1.99581e+07
+X, dfid, pancake16, "15 14 13 12 11 B 1 2 3 4 5 6 7 8 9 10", 2, 3333, 0.000167, 1.99581e+07
 X, dfid, pancake16, "5 6 7 8 4 3 2 1 0 9 10 11 12 13 14 15", 2, 756, 3.90001e-05, 1.93846e+07
 X, dfid, pancake16, "7 8 9 6 5 4 3 2 1 0 10 11 12 13 14 15", 2, 560, 2.9e-05, 1.93104e+07
 X, dfid, pancake16, "7 8 9 10 11 12 6 5 4 3 2 1 0 13 14 15", 2, 1238, 6.4e-05, 1.93437e+07
