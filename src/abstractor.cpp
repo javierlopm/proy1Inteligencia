@@ -5,6 +5,7 @@ Copyright (C) 2011 by the PSVN Research Group, University of Alberta
 #include <string.h>
 #include "psvn.hpp"
 
+using namespace std;
 
 static void resetAbstractions( const PSVN &psvn,
 			       vector<vector<size_t> > &mapping,

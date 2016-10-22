@@ -95,10 +95,10 @@ dentro de los límites de recursos previstos (i.e. 10 minutos).
 
 Problemas:
 
-Pancake: 16 panquecas
+Pancake: 16 panquecas CHECK
 Puzzle: 11-puzzle
-TopSpin: (compact encoding) 16-4 
-Tower of Hanoi: 14-4
+TopSpin: (compact encoding) 16-4 CHECK
+Tower of Hanoi: 14-4 CHECK
 
 
 ---------------------------------------------------------------------------

@@ -38,7 +38,7 @@ abstractor:
 	$(CXX) $(OPT) ../../src/abstractor.cpp ../../src/psvn.cpp -o $@
 
 %.pdb: abstractor
-	@rm -f `basename $*`.abst `basename $*`.pdb `basename $*`.psvn
+	# @rm -f `basename $*`.abst `basename $*`.pdb `basename $*`.psvn
 	./abstractor `dirname $*`.psvn `basename $*` < `basename $*`.txt
 	make `basename $*`.distSummary
 	echo Calculating `basename $*.pdb` ...
