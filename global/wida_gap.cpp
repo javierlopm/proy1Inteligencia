@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
     cin >> Epsilon;
     cin.ignore();
     cin.getline(first_state,511);
+    k=1+Epsilon;
     //for (int i=0; i < 28; i++)
     //    cout << first_state[i]<< " ";
     //cout << "\n";

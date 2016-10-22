@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
         nodos_gen++;
         tuple<unsigned,unsigned,bool> p = bounded_id_dfs(state, 0, bound, init_history);
         //costo+= get<1>(p);
-        bound =  get<1>(p);
+        bound =  -get<1>(p);
         if (get<2>(p) == 1){
             t_fin = clock();
             secs = (double)(t_fin - t_ini) / CLOCKS_PER_SEC;
@@ -68,8 +68,8 @@ int main(int argc, char **argv) {
 }
 //Iterative deepening depth-first search
 // <costo, generados, goal?>
-tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  costoPadre, int  bound, int history){
-        cout << "d: " << costoPadre << ", h=" << manhattan(&state,NUMVARS)<< endl;
+tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  costoActual, int  bound, int history){
+        //cout << "d: " << costoActual << ", h=" << manhattan(&state,NUMVARS)<< endl;
         int ruleid;
         ruleid_iterator_t posible_moves;
         state_t child;
@@ -80,11 +80,11 @@ tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  costoPadre, int
         //childCount = 0;
         nodos_gen++;
         //Caso Base
-        f = costoPadre + manhattan(&state,NUMVARS);
+        f = costoActual + manhattan(&state,NUMVARS);
         //cout << "\n" << manhattan(&state,NUMVARS) << "\n";
-        if (f > bound) return make_tuple(0, f, false);
+        if (f > bound) return make_tuple(0, -f, false);
         if (is_goal(&state)){
-            return (make_tuple(costoPadre, costoPadre, true));
+            return (make_tuple(costoActual, costoActual, true));
         }
         
 
@@ -96,10 +96,10 @@ tuple<unsigned,unsigned,bool> bounded_id_dfs(state_t state, int  costoPadre, int
             apply_fwd_rule(ruleid, &state, &child);
             history_hijo = next_fwd_history(history,ruleid);
             //++childCount;
-            tuple<unsigned,unsigned,bool> px = bounded_id_dfs(child, costoPadre+1, bound, history_hijo);
+            tuple<unsigned,unsigned,bool> px = bounded_id_dfs(child, costoActual+1, bound, history_hijo);
             if ((get<2>(px))  == 1) return make_tuple(get<0>(px), f,true);  
-            t=min(t,static_cast<int>(get<1>(px)));
+            t=min(t,-static_cast<int>(get<1>(px)));
 
         }
-        return make_tuple(0, t,false);
+        return make_tuple(0, -t,false);
 }

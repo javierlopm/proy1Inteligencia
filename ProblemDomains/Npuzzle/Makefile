@@ -3,7 +3,7 @@ CXX = g++ -std=gnu++11
 #OPT = -g -Wall -O3 -Wno-unused-function -Wno-unused-variable
 OPT = -g -Wall  -Wno-unused-function -Wno-unused-variable
 HIST=0
-PSVNOPT = --state_map  --backwards_moves --history_len=$(HIST) --
+PSVNOPT = --state_map  --backwards_moves --history_len=1 --
 # PSVNOPT = --state_map --no_abstraction --backwards_moves --history_len=$(HIST) --
 
 psvn2c_core.c:
@@ -59,11 +59,12 @@ psvn2c_abstraction.c:
 %.ida_man: %.c ../../global/ida_man.cpp
 	$(CXX) $(OPT) ../../global/ida_man.cpp -include $< -o $@
 
-%.ida_man2: %.c ../../global/ida_man2.cpp
-	$(CXX) $(OPT) ../../global/ida_man2.cpp -include $< -o $@
-
 %.wida_gap: %.c ../../global/wida_gap.cpp
 	$(CXX) $(OPT) ../../global/wida_gap.cpp -include $< -o $@
+
+%.wida_man: %.c ../../global/wida_man.cpp
+	$(CXX) $(OPT) ../../global/wida_man.cpp -include $< -o $@
+
 
 abstractor:
 	$(CXX) $(OPT) ../../src/abstractor.cpp ../../src/psvn.cpp -o $@
