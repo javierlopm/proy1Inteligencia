@@ -37,6 +37,9 @@ Para la resolución de estos problemas, creamos los siguientes archivos, los cua
     - best_first_search.cpp: algoritmo necesario para realizar búsqueda A*.
     - a_star_pdb  : el cual implementa a* con 3 abstración para 15 puzzle
     - ida_man.cpp : IDA* para la resolución de 15 puzzle
+        + 15puzzle_abs0.txt
+        + 15puzzle_abs1.txt
+        + 15puzzle_abs2.txt
     - ida_gap.cpp : IDA* para la resolución de pancakes
     - wida_man.cpp: 15 puzzle con WIDA*
     - wida_gap.cpp: pacakes con WIDA*
