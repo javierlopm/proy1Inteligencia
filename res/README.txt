@@ -35,6 +35,7 @@ Para la resolución de estos problemas, creamos los siguientes archivos, los cua
     - dfs_count.cpp: dfs acotado, realiza conteo de nodos
     - id_dfs.cpp: búsqueda en dfs acotada, de forma iterativa se aumenta la profundidad buscada hasta encontrar el objetivo.
     - best_first_search.cpp: algoritmo necesario para realizar búsqueda A*.
+    - a_star_pdb  : el cual implementa a* con 3 abstración para 15 puzzle
     - ida_man.cpp : IDA* para la resolución de 15 puzzle
     - ida_gap.cpp : IDA* para la resolución de pancakes
     - wida_man.cpp: 15 puzzle con WIDA*
