@@ -52,6 +52,9 @@ psvn2c_abstraction.c:
 %.ida_pdb: %.c ../../global/ida_pdb.cpp
 	$(CXX) $(OPT) ../../global/ida_pdb.cpp -include $< -o $@
 
+%.wida_pdb: %.c ../../global/wida_pdb.cpp
+	$(CXX) $(OPT) ../../global/wida_pdb.cpp -include $< -o $@
+
 abstractor:
 	$(CXX) $(OPT) ../../src/abstractor.cpp ../../src/psvn.cpp -o $@
 
