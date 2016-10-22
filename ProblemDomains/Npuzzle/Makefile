@@ -59,6 +59,9 @@ psvn2c_abstraction.c:
 %.ida_man: %.c ../../global/ida_man.cpp
 	$(CXX) $(OPT) ../../global/ida_man.cpp -include $< -o $@
 
+%.wida_gap: %.c ../../global/wida_gap.cpp
+	$(CXX) $(OPT) ../../global/wida_gap.cpp -include $< -o $@
+
 abstractor:
 	$(CXX) $(OPT) ../../src/abstractor.cpp ../../src/psvn.cpp -o $@
 

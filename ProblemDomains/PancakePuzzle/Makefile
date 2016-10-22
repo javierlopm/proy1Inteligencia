@@ -51,6 +51,9 @@ psvn2c_abstraction.c:
 %.ida_gap: %.c ../../global/ida_gap.cpp
 	$(CXX) $(OPT) ../../global/ida_gap.cpp -include $< -o $@
 	rm -f $*.c
+	
+%.wida_gap: %.c ../../global/wida_gap.cpp
+	$(CXX) $(OPT) ../../global/wida_gap.cpp -include $< -o $@
 
 .PHONY: clean
 clean:
