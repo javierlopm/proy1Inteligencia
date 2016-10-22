@@ -69,6 +69,8 @@ unsigned gap_h(state_t *state){
     for(int x = 0; x < NUMVARS-1; x++)
         if (abs(state->vars[x]-state->vars[x+1]) > 1) c++;
 
+    if (abs(state->vars[NUMVARS-1]-NUMVARS) > 1) c++;
+
     return c;
 }
 
