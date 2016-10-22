@@ -246,11 +246,11 @@ int main(int argc, char **argv) {
         strcat(f_pdb, ".pdb");
 
         //Leer
-        cout << "abro archivo : " << f_abst<<"\n";
+        // cout << "abro archivo : " << f_abst<<"\n";
         abst[i-1] = read_abstraction_from_file(f_abst);
-        cout << "abro archivo : " << f_pdb<<"\n";
+        // cout << "abro archivo : " << f_pdb<<"\n";
         file = fopen(f_pdb, "r");
-        cout << "abrí\n";
+        // cout << "abrí\n";
         pdb[i-1] = read_state_map(file);
         fclose(file);
     }
